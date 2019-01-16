@@ -38,7 +38,7 @@ class env:
         
         for idx, agent in enumerate(agents):   
             agent.receive_token(rewards[idx])
-            agent.learn(action_space)
+            agent.learn(actions[idx],rewards[idx])
         
         self.total_like=0
         self.timestep += 1
@@ -47,31 +47,21 @@ class env:
         mu= agent.my_like/self.total_like * reward_pool
         return random.gauss(mu,std_dev)
         
-    def reset(self):
+    def reset(self,agents):
         self.timestep=0
+        distribute_asset(agents)
 
 
-def distribute_asset(total_asset,agents,method):
-    n_agent=len(agents)
-    
-
-import math
-import random
-
-def inv_rayleigh_cdf(u):
-    return math.sqrt(-2 * math.log(1 - u))
-
-# random samples from Unif(0, 1)
-for i in range(5):
-    random_numbers = [random.random() for _ in range(10000)]
+def distribute_asset(agents):
+    n_agent=len(agents)    
+    random_numbers = np.random.random(n_agent)
     # random samples of Rayleigh Dist. through the inverse transform
-    random_numbers_from_rayleigh = [inv_rayleigh_cdf(number) for number in random_numbers]
-    proportion=[num/sum(random_numbers_from_rayleigh) for num in random_numbers]
-    print(sum(proportion))
-    print(sum(np.round(np.array(proportion)*reward_pool)))
-            
-import matplotlib.pyplot as plt
-plt.hist(random_numbers_from_rayleigh)
+    random_numbers_from_rayleigh =np.sqrt(-2*np.log(1-random_numbers)) #[inv_rayleigh_cdf(number) for number in random_numbers]
+    proportion=random_numbers_from_rayleigh/sum(random_numbers_from_rayleigh) #[num/sum(random_numbers_from_rayleigh) for num in random_numbers_from_rayleigh]
+    
+    for i in range(n_agent):
+        agents[i].asset=proportion[i]*reward_pool
+        
 
 
 
