@@ -11,7 +11,6 @@ import numpy as np
 import random
 
 parser=argparse
-
 reward_pool=100000
 alpha=1
 beta=1
@@ -67,13 +66,17 @@ class Env:
 
 def distribute_asset(agents):
     n_agent=len(agents)    
-    random_numbers = np.random.random(n_agent)
-    # random samples of Rayleigh Dist. through the inverse transform
-    random_numbers_from_rayleigh =np.sqrt(-2*np.log(1-random_numbers)) #[inv_rayleigh_cdf(number) for number in random_numbers]
-    proportion=random_numbers_from_rayleigh/sum(random_numbers_from_rayleigh) #[num/sum(random_numbers_from_rayleigh) for num in random_numbers_from_rayleigh]
+#    random_numbers = np.random.random(n_agent)
+#    # random samples of Rayleigh Dist. through the inverse transform
+#    random_numbers_from_rayleigh =np.sqrt(-2*np.log(1-random_numbers)) #[inv_rayleigh_cdf(number) for number in random_numbers]
+#    proportion=random_numbers_from_rayleigh/sum(random_numbers_from_rayleigh) #[num/sum(random_numbers_from_rayleigh) for num in random_numbers_from_rayleigh]
+#    
     
+    #np.random.pareto 분포를 쓰면 좋을듯
+    probs=np.random.pareto(2,n_agent)
     for i in range(n_agent):
-        agents[i].asset=proportion[i]*total_asset
+        agents[i].asset=probs[i]*total_asset
+
     
 
 from agent import Agent
