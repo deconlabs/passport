@@ -6,10 +6,10 @@ Created on Wed Jan 16 11:47:27 2019
 """
 import numpy as np
 
-class agent:
-    def __init__(self,actions):
+class Agent:
+    def __init__(self,action_space):
 #        self.action_space=
-        self.endeavor= actions#action_space
+        self.endeavor= action_space #action_space
         self.my_like=0
         #self.seriousness=None
         self.review_history=[] # 1 -> write 0 -> no review 

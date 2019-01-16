@@ -18,8 +18,10 @@ beta=1
 gamma=1
 n_people=15
 std_dev=0.1
+n_episode=10
+n_timestep=50
 
-class env:
+class Env:
     def __init__(self):
         self.action_space = np.arange(0,1,0.1)
         self.n_actions = len(self.action_space)
@@ -61,10 +63,23 @@ def distribute_asset(agents):
     
     for i in range(n_agent):
         agents[i].asset=proportion[i]*reward_pool
-        
+    
 
+from agent import Agent
+def run(env):
+    
+    agents = [Agent(actions=env.action_space) for i in range(n_people)]
+    endeavor_list=[]
+    
+    for episode in range(n_episode):
+        distribute_asset(agents)
+        for _ in range(n_timestep):
+            env.step(agents)
+        endeavor_list.append([agent.get_action() for agent in agents])
+    
 
-
-        
+if __name__ == '__main__':
+    env = Env()
+    run(env)
         
 
