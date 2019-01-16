@@ -12,33 +12,40 @@ import random
 
 parser=argparse
 
-reward_pool=1000000
+reward_pool=100000
 alpha=1
 beta=1
 gamma=1
 n_people=15
 std_dev=0.1
-n_episode=10
+n_episode=300
 n_timestep=50
+tiny_value=0.05
+total_asset=100000
+explore_rate=0.3
 
 class Env:
     def __init__(self):
-        self.action_space = np.arange(0,1,0.1)
+        self.action_space = np.arange(0,10)
         self.n_actions = len(self.action_space)
         self.timestep = 0
         self.total_like=0
 
     def step(self, agents):
         
-        actions = [agent.get_action() for agent in agents]
+        actions = [agent.get_action(explore_rate) for agent in agents]
         
         for agent in agents:
-            agent.my_like=beta*agent.endeavor / pow((alpha*sum(agent.review_history)),gamma)
+            
+            agent.my_like=beta*agent.action / pow((alpha*agent.review_history+tiny_value),gamma)
+#            print(agent.my_like)
             self.total_like+=agent.my_like
+#            print("like : " ,agent.my_like,self.total_like)
             
         rewards = [self.get_reward( agent,self.total_like) for agent in agents]
         
         for idx, agent in enumerate(agents):   
+            if agent.action>=1:agent.review_history+=1
             agent.receive_token(rewards[idx])
             agent.learn(actions[idx],rewards[idx])
         
@@ -46,8 +53,10 @@ class Env:
         self.timestep += 1
     
     def get_reward(self,agent,total_like):        
-        mu= agent.my_like/self.total_like * reward_pool
-        return random.gauss(mu,std_dev)
+        mu= agent.my_like/(self.total_like) * reward_pool
+        reward=max(0,random.gauss(mu,std_dev))
+#        print("reward=",reward)
+        return reward
         
     def reset(self,agents):
         self.timestep=0
@@ -62,24 +71,24 @@ def distribute_asset(agents):
     proportion=random_numbers_from_rayleigh/sum(random_numbers_from_rayleigh) #[num/sum(random_numbers_from_rayleigh) for num in random_numbers_from_rayleigh]
     
     for i in range(n_agent):
-        agents[i].asset=proportion[i]*reward_pool
+        agents[i].asset=proportion[i]*total_asset
     
 
 from agent import Agent
+
+endeavor_list=[]
 def run(env):
-    
-    agents = [Agent(actions=env.action_space) for i in range(n_people)]
-    endeavor_list=[]
-    
+    global explore_rate
     for episode in range(n_episode):
+        print("episode {} starts".format(episode))
         distribute_asset(agents)
-        for _ in range(n_timestep):
-            env.step(agents)
-        endeavor_list.append([agent.get_action() for agent in agents])
-    
+        env.step(agents)
+        endeavor_list.append([agent.get_action(explore_rate=0) for agent in agents])
+        explore_rate*=0.9
 
 if __name__ == '__main__':
     env = Env()
+    agents = [Agent(action_space=env.action_space) for i in range(n_people)]
     run(env)
         
 
