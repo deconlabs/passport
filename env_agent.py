@@ -23,6 +23,7 @@ n_timestep=50
 tiny_value=0.05
 total_asset=100000
 explore_rate=0.3
+cost=10000
 
 class Env:
     def __init__(self):
@@ -43,11 +44,12 @@ class Env:
 #            print("like : " ,agent.my_like,self.total_like)
             
         rewards = [self.get_reward( agent,self.total_like) for agent in agents]
+#        print(rewards)
         
         for idx, agent in enumerate(agents):   
             if agent.action>=1:agent.review_history+=1
             agent.receive_token(rewards[idx])
-            agent.learn(actions[idx],rewards[idx])
+            agent.learn(actions[idx],rewards[idx],cost)
         
         self.total_like=0
         self.timestep += 1

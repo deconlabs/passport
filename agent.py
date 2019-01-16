@@ -43,9 +43,9 @@ class Agent:
     def receive_token(self,amount_token):
         self.asset+=amount_token
         
-    def learn(self, action, reward):
+    def learn(self, action, reward,cost):
         q1 = self.q_table[action]
-        q2 = reward
+        q2 = reward-cost
         self.q_table[action] += self.learning_rate * \
             (q2 - q1) #/ self.beta_table[action]
 #        print("q_table= " ,self.q_table)
