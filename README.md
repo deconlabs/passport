@@ -1,3 +1,8 @@
+# How to Use
+```bash
+python3 env_agent.py
+```
+
 # ToDo
 
 * Define Cost Function
