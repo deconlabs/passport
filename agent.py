@@ -9,24 +9,30 @@ class agent:
     def __init__(self):
 #        self.action_space=
         self.endeavor= #action_space
-        
+        self.my_like=0
         #self.seriousness=None
         self.review_history=[] # 1 -> write 0 -> no review 
     
-        
-        self.value_table=np.zeros_like(self.endeavor)
+        self.learning_rate=0.1
+        self.q_table=np.zeros_like(self.endeavor)
         def softmax(x):
             return np.exp(x) / np.sum(np.exp(x), axis=0)
         self.beta_table=softmax(self.value_table)
         
         self.asset= distribute_asset() #분배방식을 변경하며 분배해보자
         
-
-    
-    def update_value(self):
-
-
-
     def get_action(self):
         action = np.random.choice(self.endeavor, p=self.beta_table)
         return action
+    
+    def receive_token(self,amount_token):
+        self.asset+=amount_token
+        
+    def learn(self, action, reward):
+        q1 = self.q_table[action]
+        q2 = reward
+        self.q_table[action] += self.learning_rate * \
+            (q2 - q1) / self.beta_table[action]
+        self.beta_table = self.softmax(self.q_table)
+    
+        
