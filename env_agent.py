@@ -55,7 +55,7 @@ class Env:
                 agent.review_history+=1
                 n_reviewers+=1
 #            agent.receive_token(rewards[idx])
-            agent.learn(actions[idx],rewards[idx],cost)
+            agent.learn(actions[idx],rewards[idx])
         
         self.total_like=0
         self.timestep += 1
@@ -71,7 +71,9 @@ class Env:
         
     def reset(self,agents):
         self.timestep=0
-        distribute_asset(agents)
+        for agent in agents:
+            agent.get_cost()
+        
 
 
 def distribute_asset(agents):
@@ -90,13 +92,13 @@ final_list=[{} for _ in range(range_endeavor)]
 
 def run(env):
     global explore_rate
+    distribute_asset(agents)
     for episode in range(n_episode+1):
         print("episode {} starts".format(episode))
-        distribute_asset(agents)
         review_ratio,actions=env.step(agents)
         
         endeavor_list.append([agent.get_action(explore_rate=0) for agent in agents])
-        explore_rate*=0.9
+        explore_rate*=0.99
         
         #visualisation
         writer.add_scalar("data/review_ratio",review_ratio,episode)
@@ -109,7 +111,8 @@ def run(env):
             counter=Counter(actions)
             for act in range(range_endeavor): 
                 final_list[act][str(episode)]=counter[act]
-    print(final_list)
+        
+        env.reset(agents)
             
     for i in range(range_endeavor):
         writer.add_scalars("data/endeavor",final_list[i],i)
@@ -119,7 +122,6 @@ if __name__ == '__main__':
     env = Env()
     agents = [Agent(action_space=env.action_space) for i in range(n_people)]
     run(env)
-    print(endeavor_list)
     writer.close()
         
 

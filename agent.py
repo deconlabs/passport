@@ -5,6 +5,7 @@ Created on Wed Jan 16 11:47:27 2019
 @author: user
 """
 import numpy as np
+alpha_=.1
 
 class Agent:
     def __init__(self,action_space):
@@ -21,6 +22,8 @@ class Agent:
         self.beta_table=self.softmax(self.q_table)
         
         self.asset=0 #분배방식을 변경하며 분배해보자
+        
+        self.cost=alpha_*self.asset*self.action
     
     def softmax(self,x):
             x=np.clip(x,-10,10)
@@ -35,22 +38,18 @@ class Agent:
             action = np.argmax(self.beta_table)
 #            return action
         self.action=action
-        
-        
         return action
 
-    
+    def get_cost(self):
+        self.cost=alpha_*self.asset*self.action
+        
     def receive_token(self,amount_token):
         self.asset+=amount_token
         
-    def learn(self, action, reward,cost):
+    def learn(self, action, reward):
         q1 = self.q_table[action]
-        q2 = reward-cost
-        self.q_table[action] += self.learning_rate * \
-            (q2 - q1) #/ self.beta_table[action]
-#        print("q_table= " ,self.q_table)
-#        print("previous beta_table= " ,self.beta_table)
+        q2 = reward-self.cost
+        self.q_table[action] += self.learning_rate * (q2 - q1) 
         self.beta_table = self.softmax(self.q_table)
-#        print("after beta_table= " ,self.beta_table)
     
         
