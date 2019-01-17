@@ -5,7 +5,7 @@ python3 env_agent.py
 
 # ToDo
 
-- [ ] Define Cost Function
+- [x] Define Cost Function
 
 - [ ] Define Hyperparameter
 
