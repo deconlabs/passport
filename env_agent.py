@@ -97,9 +97,17 @@ def run(env):
         distribute_asset(agents)
         review_ratio=env.step(agents)
         
-        writer.add_scalar("data/review_ratio",review_ratio,episode)
         endeavor_list.append([agent.get_action(explore_rate=0) for agent in agents])
         explore_rate*=0.9
+        
+        #visualisation
+        writer.add_scalar("data/review_ratio",review_ratio,episode)
+        
+        
+        for idx,agent in enumerate(agents):
+            data_beta_table=dict( (str(i),v) for i,v in enumerate(agent.beta_table ))
+            writer.add_scalars("data/{}".format(idx),data_beta_table,episode)
+        
 
 if __name__ == '__main__':
     writer=SummaryWriter()
