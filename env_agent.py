@@ -9,6 +9,7 @@ import argparse
 import numpy as np
 #from scipy import stats
 import random
+from tensorboardX import SummaryWriter
 
 parser=argparse
 reward_pool=100000
@@ -23,6 +24,7 @@ tiny_value=0.05
 total_asset=100000
 explore_rate=0.3
 cost=10000
+
 
 class Env:
     def __init__(self):
@@ -45,13 +47,19 @@ class Env:
         rewards = [self.get_reward( agent,self.total_like) for agent in agents]
 #        print(rewards)
         
+        n_reviewers=0
         for idx, agent in enumerate(agents):   
-            if agent.action>=1:agent.review_history+=1
+            if agent.action>=1:
+                agent.review_history+=1
+                n_reviewers+=1
             agent.receive_token(rewards[idx])
             agent.learn(actions[idx],rewards[idx],cost)
         
         self.total_like=0
         self.timestep += 1
+        
+        review_ratio= n_reviewers/len(agents)
+        return review_ratio
     
     def get_reward(self,agent,total_like):        
         mu= agent.my_like/(self.total_like) * reward_pool
@@ -87,13 +95,17 @@ def run(env):
     for episode in range(n_episode):
         print("episode {} starts".format(episode))
         distribute_asset(agents)
-        env.step(agents)
+        review_ratio=env.step(agents)
+        
+        writer.add_scalar("data/review_ratio",review_ratio,episode)
         endeavor_list.append([agent.get_action(explore_rate=0) for agent in agents])
         explore_rate*=0.9
 
 if __name__ == '__main__':
+    writer=SummaryWriter()
     env = Env()
     agents = [Agent(action_space=env.action_space) for i in range(n_people)]
     run(env)
+    writer.close()
         
 
