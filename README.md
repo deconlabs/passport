@@ -5,11 +5,11 @@ python3 env_agent.py
 
 # ToDo
 
-* Define Cost Function
+- [x] Define Cost Function
 
-* Define Hyperparameter
+- [ ] Define Hyperparameter
 
-* Visualization; Use matplot
+- [x] Visualization; Use matplot
   * Tracking each agent's asset
   * History of total review number
   * Endeavor level raises
