@@ -37,10 +37,10 @@ def run(env, agents, args):
         # visualisation
         writer.add_scalar("data/review_ratio", review_ratio, episode)
 
-        if episode % 100 == 0:
-            for idx, agent in enumerate(agents):
-                data_beta_table = dict((str(i), v) for i, v in enumerate(agent.beta_table))
-                writer.add_scalars("data/{}".format(idx), data_beta_table, episode)
+        if episode % args.record_term == 0:
+            # for idx, agent in enumerate(agents):
+            #    data_beta_table = dict((str(i), v) for i, v in enumerate(agent.beta_table))
+            #    writer.add_scalars("data/agents/{}".format(idx), data_beta_table, episode)
 
             print("episode: {}, review_ratio: {}".format(episode, review_ratio))
 

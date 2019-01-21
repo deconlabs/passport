@@ -24,7 +24,7 @@ def argparser():
                         help='The number of episodes for simulation')
     parser.add_argument('--tiny_value', type=float, default=0.05,
                         help='TBA')
-    parser.add_argument('--total_asset', type=int, default=100000,
+    parser.add_argument('--total_asset', type=int, default=1000,
                         help='Total amount of asset for agents')
     parser.add_argument('--temperature', type=float, default=1.0,
                         help='temperature value for softmax')
@@ -32,8 +32,9 @@ def argparser():
                         help='TBA')
     parser.add_argument('--lr', type=float, default=1e-2,
                         help='learning rate')
-    
     parser.add_argument('--window', type=int, default=5,
+                        help='TBA')
+    parser.add_argument('--record_term', type=int, default=100,
                         help='TBA')
 
     args = parser.parse_args()

@@ -7,12 +7,12 @@ import numpy as np
 import random
 from collections import deque
 
+
 class Agent:
     def __init__(self, action_space, args):
         self.endeavor = action_space  # action_space
         self.action = 0
         self.my_like = 0
-          # 1 -> write 0 -> no review
         self.review_history = deque(maxlen=args.window)
         self.cost = args.cost
         self.asset_coef = args.asset_coef
@@ -20,8 +20,7 @@ class Agent:
         self.temperature = args.temperature
         self.q_table = np.zeros_like(self.endeavor)
         self.beta_table = self.softmax(self.q_table)
-        self.mu_table = [10 + 1 * i for i in self.endeavor]
-#[10,11,12...19]
+        self.mu_table = [10 + 1 * i for i in self.endeavor]  # [10, 11, 12, ..., 19]
         self.asset = 0  # 분배방식을 변경하며 분배해보자
         self.beta = args.beta
         self.alpha = args.alpha
@@ -39,8 +38,6 @@ class Agent:
         
         self.my_like=max(0,random.gauss(mu,self.std_dev))
         return self.my_like
-    
-
         
     def softmax(self, x):
         """Compute softmax values for each sets of scores in x."""
@@ -73,5 +70,5 @@ class Agent:
     def learn(self, action, reward):
         q1 = self.q_table[action]
         q2 = reward
-        self.q_table[action] += self.learning_rate * (q2 - q1) / self.beta_table[action] #확률이 적었던 선택은 크게 없데이트 할 수 있도록
+        self.q_table[action] += self.learning_rate * (q2 - q1) / self.beta_table[action]  # 확률이 적었던 선택은 크게 없데이트 할 수 있도록
         self.beta_table = self.softmax(self.q_table)
