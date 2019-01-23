@@ -41,7 +41,7 @@ class Env:
         self.total_like = 0
 
         review_ratio = n_reviewers/len(agents)
-        return [review_ratio, actions, returns, costs, rewards]
+        return [review_ratio, actions, returns, costs, rewards,likes]
 
     def get_return(self, likes, total_like, n_reviewers, mechanism):
         if mechanism == 'uniform':
