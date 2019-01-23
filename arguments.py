@@ -20,8 +20,16 @@ def argparser():
     parser.add_argument('--cost', type=float, default=5.0,
                         help='TBA')
 
-    parser.add_argument('--asset_coef', type=float, default=1.5,
-                        help='Coefficient for cost calculation')
+    parser.add_argument('--b0', type=float, default=0.0,
+                        help='TBA')
+    parser.add_argument('--b1', type=float, default=0.1,
+                        help='TBA')
+    parser.add_argument('--b2', type=float, default=0.1,
+                        help='TBA')
+    parser.add_argument('--b3', type=float, default=0.01,
+                        help='TBA')
+    parser.add_argument('--like_coef', type=float, default=2.0,
+                        help='TBA')
 
     parser.add_argument('--n_agent', type=int, default=15,
                         help='The number of agents in simulation')

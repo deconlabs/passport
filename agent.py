@@ -20,7 +20,6 @@ class Agent:
         self.asset = 0
 
         self.temperature = args.temperature
-        self.asset_coef = args.asset_coef
         self.learning_rate = args.lr
         self.tiny_value = args.tiny_value
         self.std_dev = args.std_dev
