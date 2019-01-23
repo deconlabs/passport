@@ -7,7 +7,7 @@ def argparser():
     parser.add_argument('--mechanism', type=str, default='proportional',
                         help='TBA')
 
-    parser.add_argument('--temperature', type=float, default=1.0,
+    parser.add_argument('--temperature', type=float, default=10.0,
                         help='temperature value for softmax')
     parser.add_argument('--window', type=int, default=5,
                         help='TBA')
@@ -22,7 +22,7 @@ def argparser():
 
     parser.add_argument('--b0', type=float, default=0.0,
                         help='TBA')
-    parser.add_argument('--b1', type=float, default=500,
+    parser.add_argument('--b1', type=float, default=50000,
                         help='TBA')
     parser.add_argument('--b2', type=float, default=10.0,
                         help='TBA')
