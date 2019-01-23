@@ -24,6 +24,8 @@ class Agent:
         self.tiny_value = args.tiny_value
         self.std_dev = args.std_dev
 
+        self.args = args
+
         self.q_table = np.zeros_like(self.endeavor)
         self.beta_table = self.softmax(self.q_table)
 
@@ -81,15 +83,18 @@ class Agent:
             return 0.
         else:
             # asset과 endeavor에 의해 결정
-            b0 = 0.
-            b1 = 0.1
-            b2 = 0.1
-            b3 = 0.01
+            b0 = 0. / self.args.n_agent
+            b1 = 0.5 / self.args.n_agent
+            b2 = 3. / self.args.n_agent
+            b3 = 0.05 / self.args.n_agent
 
             # self.real_endeavor[action]: 0에서 len(endeavor)-1 까지
             # reward = agent.my_like / total_like * self.reward_pool
             # rewards = [ret - cost for ret, cost in zip(returns, costs)]
             cost = b0 + b1*self.asset + b2*self.real_endeavor[self.action] + b3*self.asset*self.real_endeavor[self.action]
+
+            print(self.asset, self.real_endeavor[self.action], self.asset*self.real_endeavor[self.action])
+
             return cost
 
     def receive_token(self, amount_token):

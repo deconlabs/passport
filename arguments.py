@@ -40,7 +40,7 @@ def argparser():
     parser.add_argument('--tiny_value', type=float, default=0.05,
                         help='TBA')
 
-    parser.add_argument('--total_asset', type=int, default=1000,
+    parser.add_argument('--total_asset', type=int, default=100,
                         help='Total amount of asset for agents')
 
     parser.add_argument('--range_endeavor', type=int, default=10,

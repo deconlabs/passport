@@ -51,7 +51,7 @@ def run(env, agents, args):
 
             print("episode: {}, review_ratio: {}".format(episode, review_ratio))
 
-            #"""
+            """
             for j in range(len(agents)):
                 print(format(j, '2d'),
                       "\tcost:", format(costs[j], '7.4f'),
@@ -59,7 +59,7 @@ def run(env, agents, args):
                       "\treward:", format(rewards[j], '7.4f'),
                       "\tendeavor_list:", format(endeavor_list[j], '7.4f'),
                       "\taction:", format(actions[j], '7.4f'))
-            #"""
+            """
 
 #            counter = Counter(actions)
 #            for act in range(args.range_endeavor):
