@@ -22,7 +22,7 @@ def argparser():
 
     parser.add_argument('--b0', type=float, default=0.0,
                         help='TBA')
-    parser.add_argument('--b1', type=float, default=5.0,
+    parser.add_argument('--b1', type=float, default=500,
                         help='TBA')
     parser.add_argument('--b2', type=float, default=10.0,
                         help='TBA')

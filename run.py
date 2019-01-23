@@ -16,12 +16,14 @@ from env import Env
 
 def distribute_asset(agents, total_asset, n_agent):
     # np.random.pareto 분포를 쓰면 좋을듯
+#    probs=np.random.normal(total_asset/n_agent, 3, n_agent)
+    
     probs = np.random.pareto(2, n_agent)
     probs /= np.sum(probs)
     probs = sorted(probs)[::-1]
 
     for i in range(n_agent):
-        agents[i].asset = probs[i]*total_asset
+        agents[i].asset = probs[i]
 
 
 def run(env, agents, args):
@@ -70,7 +72,7 @@ def run(env, agents, args):
 
 if __name__ == '__main__':    
     args = argparser()
-    writer = SummaryWriter("./visualization/{}".format(args.mechanism))
+    writer = SummaryWriter("./visualization/{}".format(args.mechanism+"_"+str(args.n_agent)))
     env = Env(args)
     agents = [Agent(env.action_space, args) for i in range(args.n_agent)]
     run(env, agents, args)
