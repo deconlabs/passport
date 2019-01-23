@@ -31,7 +31,7 @@ def run(env, agents, args):
     
     return_dict = defaultdict(lambda: deque(maxlen=100))
     cost_dict = defaultdict(lambda: deque(maxlen=100))
-
+    ep_dict={}
     for episode in range(args.n_episode + 1):
         distribute_asset(agents, args.total_asset, args.n_agent)
 #        print("episode {} starts".format(episode))
@@ -45,6 +45,9 @@ def run(env, agents, args):
         # visualisation
         if episode % 10==0:
             writer.add_scalar("review_ratio", review_ratio, episode)
+            return_ = np.mean([return_dict[i][-1] for i in range(len(agents)) if return_dict[i][-1] != 0])
+            cost = np.mean([cost_dict[i][-1] for i in range(len(agents)) if cost_dict[i][-1] != 0])
+            writer.add_scalars("return_cost", {"return":return_, "cost":cost}, episode)
 #        writer.add_scalar("actions", review_ratio, episode)
 #        writer.add_scalar("data/review_ratio", review_ratio, episode)
 #        writer.add_scalar("data/review_ratio", review_ratio, episode)
@@ -55,13 +58,18 @@ def run(env, agents, args):
 #                data_beta_table = dict((str(i), v) for i, v in enumerate(agent.beta_table))
 #                writer.add_scalars("data/{}".format(idx), data_beta_table, episode)
             for i,agent in enumerate(agents):
-                writer.add_scalar("episode{}/endeavor_distribution".format(episode),agent.get_action(deterministic=True),i)
+#                writer.add_scalar("episode{}/endeavor_distribution".format(episode),agent.get_action(deterministic=True),i)
                 writer.add_scalar("episode{}/weighted_average_endeavor".format(episode),np.sum(np.array(agent.endeavor)*agent.beta_table),i)
-                writer.add_scalars("episode{}/return_cost".format(episode),{'returns':np.mean(return_dict[i]) , 'costs' : np.mean(cost_dict[i])},i)
+#                writer.add_scalars("episode{}/return_cost".format(episode),{'returns':np.mean(return_dict[i]) , 'costs' : np.mean(cost_dict[i])},i)
             #"""
 
             print("episode: {}, review_ratio: {}".format(episode, review_ratio))
-
+            
+#            for i,agent in enumerate(agents):
+#                writer.add_scalars("return_cost",
+#                                   {'returns_{}'.format(episode):np.mean(return_dict[i]) , 
+#                                    'costs_{}'.format(episode) : np.mean(cost_dict[i])},i)
+             
             #"""
             for j in range(len(agents)):
                 print(format(j, '2d'),
@@ -71,7 +79,7 @@ def run(env, agents, args):
                       "\tendeavor_list:", format(endeavor_list[j], '7.4f'),
                       "\taction:", format(actions[j], '7.4f'))
                 
-
+            
 #            counter = Counter(actions)
 #            for act in range(args.range_endeavor):
 #                final_list[act][str(episode)] = counter[act]
