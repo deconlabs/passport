@@ -18,9 +18,7 @@ class Env:
         for agent in agents:
             actions.append(agent.get_action())
             
-            #review
             agent.my_like = agent.get_my_like()
-            
             likes.append(agent.my_like)
             
             self.total_like += agent.my_like

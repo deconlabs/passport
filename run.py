@@ -70,7 +70,7 @@ def run(env, agents, args):
 
 if __name__ == '__main__':    
     args = argparser()
-    writer = SummaryWriter("./visualization/{}".format(args.mechanism+"_"+str(args.n_agent)))
+    writer = SummaryWriter("./visualization/{}".format(args.mechanism))
     env = Env(args)
     agents = [Agent(env.action_space, args) for i in range(args.n_agent)]
     run(env, agents, args)
