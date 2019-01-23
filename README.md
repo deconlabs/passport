@@ -3,10 +3,6 @@
 python3 env_agent.py
 ```
 
-```bash
-tensorboard —logdir <directory> —port 6021
-```
-
 # ToDo
 
 - [x] Define Cost Function
