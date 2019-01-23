@@ -22,11 +22,11 @@ def argparser():
 
     parser.add_argument('--b0', type=float, default=0.0,
                         help='TBA')
-    parser.add_argument('--b1', type=float, default=0.1,
+    parser.add_argument('--b1', type=float, default=5.0,
                         help='TBA')
-    parser.add_argument('--b2', type=float, default=0.1,
+    parser.add_argument('--b2', type=float, default=10.0,
                         help='TBA')
-    parser.add_argument('--b3', type=float, default=0.01,
+    parser.add_argument('--b3', type=float, default=0.1,
                         help='TBA')
     parser.add_argument('--like_coef', type=float, default=2.0,
                         help='TBA')

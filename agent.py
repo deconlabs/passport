@@ -83,17 +83,17 @@ class Agent:
             return 0.
         else:
             # asset과 endeavor에 의해 결정
-            b0 = 0. / self.args.n_agent
-            b1 = 0.5 / self.args.n_agent
-            b2 = 3. / self.args.n_agent
-            b3 = 0.05 / self.args.n_agent
+            b0 = self.args.b0 / self.args.n_agent
+            b1 = self.args.b1 / self.args.n_agent
+            b2 = self.args.b2 / self.args.n_agent
+            b3 = self.args.b3 / self.args.n_agent
 
             # self.real_endeavor[action]: 0에서 len(endeavor)-1 까지
             # reward = agent.my_like / total_like * self.reward_pool
             # rewards = [ret - cost for ret, cost in zip(returns, costs)]
             cost = b0 + b1*self.asset + b2*self.real_endeavor[self.action] + b3*self.asset*self.real_endeavor[self.action]
 
-            print(self.asset, self.real_endeavor[self.action], self.asset*self.real_endeavor[self.action])
+            # print(self.asset, self.real_endeavor[self.action], self.asset*self.real_endeavor[self.action])
 
             return cost
 
