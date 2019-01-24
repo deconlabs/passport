@@ -12,7 +12,7 @@ python3 run.py [--<arg1>=<value1>] [--<arg2>=<value2>] ...
 /bin/sh runpy.sh
 ```
 
-- tensorboard
+# View Tensorboard
 ```bash
 tensorboard --port=6021 --logdir <path>
 ```
