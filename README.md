@@ -1,25 +1,21 @@
 # How to Use
-```bash
-python3 env_agent.py
-```
 
-- tensorboard
+## Run
+```bash
+python3 run.py [--<arg1>=<value1>] [--<arg2>=<value2>] ...
+```
+*or*
+```bash
+/bin/sh runpy.sh
+```
+## View Tensorboard
 ```bash
 tensorboard --port=6021 --logdir <path>
 ```
 
-# ToDo
+# Trouble Shooting
 
-- [x] Define Cost Function
-
-- [ ] Define Hyperparameter
-
-- [x] Visualization; Use matplot
-  * Tracking each agent's asset
-  * History of total review number
-  * Endeavor level raises
-  * and so on...
-
-# Proposal
-
-* Hotel give satisfaction level to agents; this level helps agents decide whether to write reviews
+## Check Flake8 Convention
+```bash
+flake8 --ignore E501
+```
