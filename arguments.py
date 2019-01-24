@@ -46,16 +46,16 @@ def argparser():
     parser.add_argument('--tiny_value', type=float, default=0.05,
                         help='TBA')
 
-    parser.add_argument('--total_asset', type=int, default=100,
-                        help='Total amount of asset for agents')
-
     parser.add_argument('--range_endeavor', type=int, default=10,
                         help='TBA')
 
     parser.add_argument('--lr', type=float, default=1e-2,
                         help='learning rate')
 
-    parser.add_argument('--record_term', type=int, default=100,
+    parser.add_argument('--record_term_1', type=int, default=10,
+                        help='TBA')
+
+    parser.add_argument('--record_term_2', type=int, default=100,
                         help='TBA')
 
     args = parser.parse_args()
