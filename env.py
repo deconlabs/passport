@@ -39,7 +39,7 @@ class Env:
         n_reviewers = 0
         likes = []
         for agent in agents:
-            actions.append(agent.get_action())
+            actions.append(agent.get_action())  # 확률론적
 
             agent.my_like = agent.get_my_like()
             likes.append(agent.my_like)
@@ -60,16 +60,12 @@ class Env:
             agent.learn(actions[idx], rewards[idx])
 
         """
-        다음 에피소드를 위해 총 좋아요의 수를 초기화
-        """
-        self.total_like = 0
-
-        """
         리뷰 작성의 비율
             -   에이전트 중 몇 명이 리뷰를 작성하였는가.
         """
         review_ratio = n_reviewers / len(agents)
-        return [review_ratio, actions, returns, costs, rewards, likes]
+
+        return review_ratio, actions, returns, costs, rewards, likes
 
     def get_return(self, likes, total_like, n_reviewers, mechanism):
         """

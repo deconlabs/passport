@@ -35,10 +35,10 @@ def argparser():
     parser.add_argument('--b0', type=float, default=0.0,
                         help='The constant term of cost function')
 
-    parser.add_argument('--b1', type=float, default=500,
+    parser.add_argument('--b1', type=float, default=1.0,
                         help='The asset\'s coefficient of cost function')
 
-    parser.add_argument('--b2', type=float, default=10.0,
+    parser.add_argument('--b2', type=float, default=1.0,
                         help='The endeavor\'s coefficient of cost function')
 
     parser.add_argument('--b3', type=float, default=0.1,
@@ -51,7 +51,7 @@ def argparser():
     parser.add_argument('--std_dev', type=float, default=1.0,
                         help='The standard deviation for gaussian distribution in Like')
 
-    parser.add_argument('--temperature', type=float, default=10.0,
+    parser.add_argument('--temperature', type=float, default=2.0,
                         help='The temperature value for softmax')
 
     parser.add_argument('--lr', type=float, default=1e-2,

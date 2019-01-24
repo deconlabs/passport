@@ -1,12 +1,11 @@
-from tensorboardX import SummaryWriter
-from collections import deque, defaultdict
+# from tensorboardX import SummaryWriter
 import numpy as np
 
 from agent import Agent
 from arguments import argparser
 
 from env import Env
-from graph_generate import review_return, reward_review, cost_endeavor, avg_like_for_review, agent_base_graph
+# from graph_generate import review_return, reward_review, cost_endeavor, avg_like_for_review, agent_base_graph
 
 
 def distribute_asset(agents, n_agent):
@@ -51,9 +50,6 @@ def run(env, agents, args):
     :return: 없음
     """
 
-    return_dict = defaultdict(lambda: deque(maxlen=100))
-    cost_dict = defaultdict(lambda: deque(maxlen=100))
-
     """
     환경에서 에이전트를 구동하는 함수
 
@@ -71,9 +67,17 @@ def run(env, agents, args):
         """
         distribute_asset(agents, args.n_agent)
 
-        # print("episode {} starts".format(episode))
+        print("episode {} starts".format(episode))
+
         """
         실제 1 step을 수행함.
+
+        *   review_ratio: float
+        *   actions: list of int
+        *   returns: list of float
+        *   costs: list of float
+        *   rewards: list of float
+        *   likes: list of float
         """
         review_ratio, actions, returns, costs, rewards, likes = env.step(agents)
 
@@ -85,10 +89,6 @@ def run(env, agents, args):
         """
         endeavor_list = [agent.get_action(deterministic=True) for agent in agents]
 
-        for i in range(len(agents)):
-            return_dict[i].append(returns[i])
-            cost_dict[i].append(costs[i])
-
         """
         시각화 부분.
 
@@ -96,45 +96,39 @@ def run(env, agents, args):
         default: record_term_2 = 100
         """
         if episode % args.record_term_1 == 0:
-            review_return(return_dict, review_ratio, agents, writer, episode)
-            reward_review(return_dict, cost_dict, review_ratio, agents, writer, episode)
-            cost_endeavor(cost_dict, endeavor_list, agents, writer, episode)
-            avg_like_for_review(likes, endeavor_list, writer, episode)
+            pass
 
         if episode % args.record_term_2 == 0:
             """
             console 출력 부분
             """
-            print("episode: {}, review_ratio: {}".format(episode, review_ratio))
-            for i, agent in enumerate(agents):
-                writer.add_scalar("episode{}/endeavor_distribution".format(episode),
-                                  agent.get_action(deterministic=True), i)
-                writer.add_scalar("episode{}/weighted_average_endeavor".format(episode),
-                                  np.sum(np.array(agent.endeavor) * agent.beta_table), i)
-                writer.add_scalars("episode{}/return_cost".format(episode),
-                                   {'returns': np.mean(return_dict[i]), 'costs': np.mean(cost_dict[i])}, i)
 
+            """
+            agent별 출력
+            """
             for j in range(len(agents)):
                 print(format(j, '2d'),
-                      "\tcost:", format(costs[j], '7.4f'),
                       "\treturn:", format(returns[j], '7.4f'),
+                      "\tcost:", format(costs[j], '7.4f'),
                       "\treward:", format(rewards[j], '7.4f'),
                       "\tendeavor_list:", format(endeavor_list[j], '7.4f'),
                       "\taction:", format(actions[j], '7.4f'))
 
-    agent_base_graph(agents, writer)
+        """
+        다음 에피소드를 위해 총 좋아요의 수를 초기화
+        """
+        env.total_like = 0
 
 
 if __name__ == '__main__':
     """
     main
     """
-
     args = argparser()
-    writer = SummaryWriter("./visualization/{}".format(args.mechanism + "_" + str(args.n_agent)))
+    # writer = SummaryWriter("./visualization/{}".format(args.mechanism + "_" + str(args.n_agent)))
 
     env = Env(args)
     agents = [Agent(env.action_space, args) for i in range(args.n_agent)]
     run(env, agents, args)
 
-    writer.close()
+    # writer.close()
