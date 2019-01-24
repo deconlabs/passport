@@ -128,7 +128,8 @@ def run(env, agents, args):
                       "\tendeavor_list:", format(endeavor_list[j], '7.4f'),
                       "\taction:", format(actions[j], '7.4f'))
 
-    agent_base_graph(agents,writer)
+    agent_base_graph(agents, writer)
+
 
 if __name__ == '__main__':
     """

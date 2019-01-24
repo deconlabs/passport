@@ -68,7 +68,7 @@ class Env:
         리뷰 작성의 비율
             -   에이전트 중 몇 명이 리뷰를 작성하였는가.
         """
-        review_ratio = n_reviewers/len(agents)
+        review_ratio = n_reviewers / len(agents)
         return [review_ratio, actions, returns, costs, rewards, likes]
 
     def get_return(self, likes, total_like, n_reviewers, mechanism):
