@@ -33,7 +33,7 @@ def mechanism_v2(reward_pool, likes, total_like, n_reviewers):
     return rewards
 
 
-# DEFAULT
+# DEFAULT: PROPORTIONAL
 def mechanism_v3(reward_pool, likes, total_like, n_reviewers):
     likes = np.array(likes) / total_like
     rewards = likes * reward_pool
