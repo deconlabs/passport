@@ -185,10 +185,13 @@ class Agent:
 
         else:
             # asset과 endeavor에 의해 결정
-            b0 = self.args.b0 / self.args.n_agent
-            b1 = self.args.b1 / self.args.n_agent
-            b2 = self.args.b2 / self.args.n_agent
-            b3 = self.args.b3 / self.args.n_agent
+            """
+            *   asset은 비율이므로 에이전트의 수를 곱하여 정규화 
+            """
+            b0 = self.args.b0
+            b1 = self.args.b1 * self.args.n_agent
+            b2 = self.args.b2
+            b3 = self.args.b3 * self.args.n_agent
 
             # self.real_endeavor[action]: 0에서 len(endeavor)-1 까지
             # reward = agent.my_like / total_like * self.reward_pool

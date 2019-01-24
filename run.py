@@ -12,7 +12,8 @@ from agent import Agent
 from arguments import argparser
 
 from env import Env
-from graph_generate import review_return,reward_review,cost_endeavor,avg_like_for_review,agent_base_graph
+from graph_generate import review_return, reward_review, cost_endeavor, avg_like_for_review, agent_base_graph
+
 
 def distribute_asset(agents, n_agent):
     """
