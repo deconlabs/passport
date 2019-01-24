@@ -5,7 +5,11 @@ flake8 --ignore E501
 
 # How to Use
 ```bash
-python3 env_agent.py
+python3 run.py [--<arg1>=<value1>] [--<arg2>=<value2>] ...
+```
+*or*
+```bash
+/bin/sh runpy.sh
 ```
 
 - tensorboard
