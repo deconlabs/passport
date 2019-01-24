@@ -4,6 +4,13 @@
 ```bash
 python3 run.py [--<arg1>=<value1>] [--<arg2>=<value2>] ...
 ```
+
+ex
+
+```bash
+python3 run.py --n_agent=20 --n_episode=500 --n_average=10
+```
+
 *or*
 ```bash
 /bin/sh runpy.sh
