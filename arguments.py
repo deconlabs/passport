@@ -11,6 +11,9 @@ def argparser():
     parser.add_argument('--n_episode', type=int, default=500,
                         help='The number of episodes for simulation')
 
+    parser.add_argument('--n_average', type=int, default=10,
+                        help='The number of times which need for calculating average')
+
     parser.add_argument('--range_endeavor', type=int, default=10,
                         help='The range of endeavor')
 
@@ -27,8 +30,11 @@ def argparser():
     parser.add_argument('--record_term_2', type=int, default=100,
                         help='The term of episodes recording')
 
-    """Especially Coefficients"""
-    parser.add_argument('--like_coef', type=float, default=1.0,
+    """Coefficients for Like Function"""
+    parser.add_argument('--like_coef_1', type=float, default=2.0,
+                        help='The value which controls \'like\' distribution')
+
+    parser.add_argument('--like_coef_2', type=float, default=2.0,
                         help='The value which controls \'like\' distribution')
 
     """Coefficients for Cost Function"""
@@ -51,7 +57,7 @@ def argparser():
     parser.add_argument('--std_dev', type=float, default=1.0,
                         help='The standard deviation for gaussian distribution in Like')
 
-    parser.add_argument('--temperature', type=float, default=2.0,
+    parser.add_argument('--temperature', type=float, default=1.0,
                         help='The temperature value for softmax')
 
     parser.add_argument('--lr', type=float, default=1e-2,

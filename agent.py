@@ -95,9 +95,9 @@ class Agent:
             -   본 값이 클 수록 받는 좋아요의 차이가 크게 차이나게 됨.
             -   물론 확률적으로 받으므로 무조건적으로 크게 받는 것은 아니며, 크게 받을 확률이 커지는 것.
         """
-        coef1 = self.args.like_coef
-        coef2 = coef1 / (len(self.review_history) + sys.float_info.epsilon)  # coef1에 종속적
-        mu = coef1 * (self.action) + coef2 * score
+        coef1 = self.args.like_coef_1
+        coef2 = self.args.like_coef_2
+        mu = coef1 * (self.action) + coef2 / (len(self.review_history) + sys.float_info.epsilon) * score
 
         """
         *   좋아요만 있기에, 음수는 있을 수 없으므로, 0으로 예외처리

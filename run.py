@@ -1,11 +1,21 @@
-# from tensorboardX import SummaryWriter
+from tensorboardX import SummaryWriter
 import numpy as np
+import random
 
 from agent import Agent
 from arguments import argparser
 
 from env import Env
-# from graph_generate import review_return, reward_review, cost_endeavor, avg_like_for_review, agent_base_graph
+
+
+def list_format_print(flist):
+    print('[ ', end='')
+    for i, elem in enumerate(flist):
+        if i == len(flist) - 1:
+            print(str(format(elem * 100, '7.2f')), end='')
+            print(' ]')
+        else:
+            print(str(format(elem * 100, '7.2f')) + ',', end='')
 
 
 def distribute_asset(agents, n_agent):
@@ -47,8 +57,15 @@ def run(env, agents, args):
     :param env: 정의한 환경
     :param agents: 참여 에이전트들
     :param args: 하이퍼파라메터들
-    :return: 없음
+    :return:    res_returns, res_costs, res_rewards, res_actions, res_highests, res_beta_tables
+                for each agents
     """
+    res_returns = []
+    res_costs = []
+    res_rewards = []
+    res_actions = []
+    res_highests = []
+    res_total_beta_lists = []
 
     """
     환경에서 에이전트를 구동하는 함수
@@ -66,8 +83,6 @@ def run(env, agents, args):
             -   매 에피소드는 1 step으로 돌아간다고 봐도 무방
         """
         distribute_asset(agents, args.n_agent)
-
-        print("episode {} starts".format(episode))
 
         """
         실제 1 step을 수행함.
@@ -87,7 +102,8 @@ def run(env, agents, args):
 
         *   deterministic=True이므로 결정론적으로 action이 결정됨
         """
-        endeavor_list = [agent.get_action(deterministic=True) for agent in agents]
+        highests = [agent.get_action(deterministic=True) for agent in agents]
+        total_beta_lists = [agent.beta_table for agent in agents]
 
         """
         시각화 부분.
@@ -96,39 +112,109 @@ def run(env, agents, args):
         default: record_term_2 = 100
         """
         if episode % args.record_term_1 == 0:
+            # writer.add_scalar("action_ratio", sum([agent.action / env. for agent in agents]), episode)
             pass
 
         if episode % args.record_term_2 == 0:
             """
-            console 출력 부분
+            record
             """
-
-            """
-            agent별 출력
-            """
-            for j in range(len(agents)):
-                print(format(j, '2d'),
-                      "\treturn:", format(returns[j], '7.4f'),
-                      "\tcost:", format(costs[j], '7.4f'),
-                      "\treward:", format(rewards[j], '7.4f'),
-                      "\tendeavor_list:", format(endeavor_list[j], '7.4f'),
-                      "\taction:", format(actions[j], '7.4f'))
+            res_returns.append(returns)
+            res_costs.append(costs)
+            res_rewards.append(rewards)
+            res_actions.append(actions)
+            res_highests.append(highests)
+            res_total_beta_lists.append(total_beta_lists)
 
         """
         다음 에피소드를 위해 총 좋아요의 수를 초기화
         """
         env.total_like = 0
 
+    return res_returns, res_costs, res_rewards, res_actions, res_highests, res_total_beta_lists
+
 
 if __name__ == '__main__':
     """
     main
     """
+
+    """
+    set random seeds
+    """
+    np.random.seed(950327)
+    random.seed(950327)
+
     args = argparser()
-    # writer = SummaryWriter("./visualization/{}".format(args.mechanism + "_" + str(args.n_agent)))
+    writer = SummaryWriter("./visualization/{}".format(args.mechanism + "_" + str(args.n_agent)))
 
-    env = Env(args)
-    agents = [Agent(env.action_space, args) for i in range(args.n_agent)]
-    run(env, agents, args)
+    """
+    default n_average=10
+    """
+    all_returns = []
+    all_costs = []
+    all_rewards = []
+    all_actions = []
+    all_highests = []
+    all_total_beta_lists = []
 
-    # writer.close()
+    for i in range(args.n_average):
+        env = Env(args)
+        agents = [Agent(env.action_space, args) for i in range(args.n_agent)]
+        returns, costs, rewards, actions, highests, total_beta_lists = run(env, agents, args)
+
+        all_returns.append(returns)
+        all_costs.append(costs)
+        all_rewards.append(rewards)
+        all_actions.append(actions)
+        all_highests.append(highests)
+        all_total_beta_lists.append(total_beta_lists)
+
+        print("loop", i, "done")
+
+    """
+    average
+    per recorded episode
+    """
+    for episode in range(int(args.n_episode / args.record_term_2) + 1):
+        avg_returns = np.zeros(args.n_agent)
+        avg_costs = np.zeros(args.n_agent)
+        avg_rewards = np.zeros(args.n_agent)
+        avg_actions = np.zeros(args.n_agent)
+        avg_highests = np.zeros(args.n_agent)
+        avg_total_beta_lists = np.zeros((args.n_agent, args.range_endeavor))
+
+        print("\n\nepisode {}".format(episode * args.record_term_2))
+
+        for i in range(args.n_average):
+            avg_returns += np.array(all_returns[i][episode]) / args.n_average
+            avg_costs += np.array(all_costs[i][episode]) / args.n_average
+            avg_rewards += np.array(all_rewards[i][episode]) / args.n_average
+            avg_actions += np.array(all_actions[i][episode]) / args.n_average
+            avg_highests += np.array(all_highests[i][episode]) / args.n_average
+            avg_total_beta_lists += np.array(all_total_beta_lists[i][episode]) / args.n_average
+
+        """
+        indexes
+        """
+        print("\t\t\t\t\t\t\t\t\t\t\t\t\t", end='')
+        for j in range(len(avg_total_beta_lists[0])):
+            if j == len(avg_total_beta_lists[0]) - 1:
+                print(j)
+            else:
+                print(j, end='\t ')
+
+        """
+        console
+        """
+        for j in range(len(agents)):
+            print(format(j, '2d'),
+                  "\treturn:", format(avg_returns[j], '5.2f'),
+                  "\tcost:", format(avg_costs[j], '5.2f'),
+                  "\treward:", format(avg_rewards[j], '5.2f'),
+                  "\taction:", format(avg_actions[j], '5.2f'),
+                  "\thighest:", format(avg_highests[j], '5.2f'),
+                  "\tbeta_table(%): ", end='')
+            list_format_print(avg_total_beta_lists[j])
+
+    writer.close()

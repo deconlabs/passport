@@ -1,12 +1,5 @@
 import numpy as np
 
-# reward  distribution system
-# how to change get_reward()  function
-
-# encourage influentail people
-# previous: porportional to like [0.1,0.3,0.4,0.2]
-# after: quadratically proportianl [0.03333333, 0.3       , 0.53333333, 0.13333333]
-
 
 # UNIFORM
 def mechanism_v1(reward_pool, likes, total_like, n_reviewers):
