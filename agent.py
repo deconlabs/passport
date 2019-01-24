@@ -39,6 +39,8 @@ class Agent:
         *   asset: 초기 할당받는 자산
             -   비율로 할당됨.
         """
+        self.args = args
+
         self.endeavor = action_space  # [0, 1, 2, ...]
         self.real_endeavor =\
             np.power(np.e, np.array(self.endeavor) * np.log(len(self.endeavor)) / (len(self.endeavor) - 1)) - 1
@@ -50,8 +52,6 @@ class Agent:
 
         self.q_table = np.zeros_like(self.endeavor)
         self.beta_table = self.softmax(self.q_table)
-
-        self.args = args
 
     def get_my_like(self):
         """
