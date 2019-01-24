@@ -17,5 +17,6 @@ tensorboard --port=6021 --logdir <path>
 
 ## Check Flake8 Convention
 ```bash
+autopep8 -i graph_generate.py
 flake8 --ignore E501
 ```
