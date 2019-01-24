@@ -61,7 +61,7 @@ def run(env, agents, args):
 
     """
     환경에서 에이전트를 구동하는 함수
-    
+
     *   에피소드보다 1만큼 더 돌림
         -   record_term 만큼 돌리는데 제일 마지막 수행까지 기록하기 위하여
         -   가령 300 에피소드를 100번째마다 기록한다고 하면, 0, 100, 200, 300의 수행을 기록할 수 있다.
@@ -69,7 +69,7 @@ def run(env, agents, args):
     for episode in range(args.n_episode + 1):
         """
         자산을 분배한다.
-        
+
         *   매 에피소드마다 자산을 새로 분배함
             -   본 시뮬레이션에서는 step이라는 개념이 딱히 필요 없음
             -   매 에피소드는 1 step으로 돌아간다고 봐도 무방
@@ -85,8 +85,8 @@ def run(env, agents, args):
         """
         get_action으로 각 에이전트의 action을 갱신하고,
         리스트 형태로 저장함.
-        
-        *   deterministic=True이므로 결정론적으로 action이 결정됨  
+
+        *   deterministic=True이므로 결정론적으로 action이 결정됨
         """
         endeavor_list = [agent.get_action(deterministic=True) for agent in agents]
 
@@ -96,7 +96,7 @@ def run(env, agents, args):
 
         """
         시각화 부분.
-        
+
         default: record_term_1 = 10
         default: record_term_2 = 100
         """
