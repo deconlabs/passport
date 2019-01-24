@@ -12,7 +12,7 @@ from agent import Agent
 from arguments import argparser
 
 from env import Env
-
+from graph_generate import review_return,reward_review,cost_endeavor,avg_like_for_review,agent_base_graph
 
 def distribute_asset(agents, n_agent):
     """
@@ -80,7 +80,7 @@ def run(env, agents, args):
         """
         실제 1 step을 수행함.
         """
-        review_ratio, actions, returns, costs, rewards = env.step(agents)
+        review_ratio, actions, returns, costs, rewards, likes = env.step(agents)
 
         """
         get_action으로 각 에이전트의 action을 갱신하고,
@@ -100,20 +100,17 @@ def run(env, agents, args):
         default: record_term_1 = 10
         default: record_term_2 = 100
         """
-        # visualisation
         if episode % args.record_term_1 == 0:
-            writer.add_scalar("review_ratio", review_ratio, episode)
-            # writer.add_scalar("actions", review_ratio, episode)
-            # writer.add_scalar("data/review_ratio", review_ratio, episode)
-            # writer.add_scalar("data/review_ratio", review_ratio, episode)
-            # writer.add_scalar("data/review_ratio", review_ratio, episode)
+            review_return(return_dict, review_ratio, agents, writer, episode)
+            reward_review(return_dict, cost_dict, review_ratio, agents, writer, episode)
+            cost_endeavor(cost_dict, endeavor_list, agents, writer, episode)
+            avg_like_for_review(likes, endeavor_list, writer, episode)
 
         if episode % args.record_term_2 == 0:
+            """
+            console 출력 부분
+            """
             print("episode: {}, review_ratio: {}".format(episode, review_ratio))
-
-            # for idx, agent in enumerate(agents):
-            # data_beta_table = dict((str(i), v) for i, v in enumerate(agent.beta_table))
-            # writer.add_scalars("data/{}".format(idx), data_beta_table, episode)
             for i, agent in enumerate(agents):
                 writer.add_scalar("episode{}/endeavor_distribution".format(episode),
                                   agent.get_action(deterministic=True), i)
@@ -122,9 +119,6 @@ def run(env, agents, args):
                 writer.add_scalars("episode{}/return_cost".format(episode),
                                    {'returns': np.mean(return_dict[i]), 'costs': np.mean(cost_dict[i])}, i)
 
-            """
-            console 출력 부분
-            """
             for j in range(len(agents)):
                 print(format(j, '2d'),
                       "\tcost:", format(costs[j], '7.4f'),
@@ -133,6 +127,7 @@ def run(env, agents, args):
                       "\tendeavor_list:", format(endeavor_list[j], '7.4f'),
                       "\taction:", format(actions[j], '7.4f'))
 
+    agent_base_graph(agents,writer)
 
 if __name__ == '__main__':
     """
