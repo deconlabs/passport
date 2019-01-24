@@ -22,10 +22,10 @@ def argparser():
 
     """Visualization"""
     parser.add_argument('--record_term_1', type=int, default=10,
-                        help='TBA')
+                        help='The term of episodes recording')
 
     parser.add_argument('--record_term_2', type=int, default=100,
-                        help='TBA')
+                        help='The term of episodes recording')
 
     """Especially Coefficients"""
     parser.add_argument('--like_coef', type=float, default=1.0,
