@@ -11,7 +11,8 @@ from collections import deque
 class Agent:
     def __init__(self, action_space, args):
         self.endeavor = action_space  # [0, 1, 2, ...]
-        self.real_endeavor = np.power(np.e, np.array(self.endeavor)*np.log(len(self.endeavor))/(len(self.endeavor)-1))-1
+        self.real_endeavor =\
+            np.power(np.e, np.array(self.endeavor) * np.log(len(self.endeavor)) / (len(self.endeavor) - 1)) - 1
         self.action = 0  # index: 0 or 1 or 2 or ...
         self.my_like = 0
         self.review_history = deque(maxlen=args.window)  # 1 or 0
@@ -91,7 +92,11 @@ class Agent:
             # self.real_endeavor[action]: 0에서 len(endeavor)-1 까지
             # reward = agent.my_like / total_like * self.reward_pool
             # rewards = [ret - cost for ret, cost in zip(returns, costs)]
-            cost = b0 + b1*self.asset + b2*self.real_endeavor[self.action] + b3*self.asset*self.real_endeavor[self.action]
+            cost =\
+                b0 +\
+                b1 * self.asset +\
+                b2 * self.real_endeavor[self.action] +\
+                b3 * self.asset * self.real_endeavor[self.action]
 
             # print(self.asset, self.real_endeavor[self.action], self.asset*self.real_endeavor[self.action])
 

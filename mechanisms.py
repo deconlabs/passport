@@ -26,7 +26,7 @@ def mechanism_v1(reward_pool, likes, total_like, n_reviewers):
 
 # EXPONENTIAL
 def mechanism_v2(reward_pool, likes, total_like, n_reviewers):
-    likes = np.array(likes)/total_like
+    likes = np.array(likes) / total_like
     exp_prop = np.power(likes, 2)
     exp_prop = exp_prop / sum(exp_prop)
     rewards = exp_prop * reward_pool
@@ -35,7 +35,7 @@ def mechanism_v2(reward_pool, likes, total_like, n_reviewers):
 
 # DEFAULT
 def mechanism_v3(reward_pool, likes, total_like, n_reviewers):
-    likes = np.array(likes)/total_like
+    likes = np.array(likes) / total_like
     rewards = likes * reward_pool
     return rewards
 
