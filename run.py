@@ -134,10 +134,11 @@ def run(env, agents, args):
                       "\taction:", format(actions[j], '7.4f'))
 
 
-"""
-main
-"""
 if __name__ == '__main__':
+    """
+    main
+    """
+
     args = argparser()
     writer = SummaryWriter("./visualization/{}".format(args.mechanism + "_" + str(args.n_agent)))
 
