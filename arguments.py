@@ -31,13 +31,13 @@ def argparser():
     parser.add_argument('--b0', type=float, default=0.0,
                         help='TBA')
 
-    parser.add_argument('--b1', type=float, default=500,
+    parser.add_argument('--b1', type=float, default=50000,
                         help='TBA')
 
-    parser.add_argument('--b2', type=float, default=0.1,
+    parser.add_argument('--b2', type=float, default=10.0,
 
                         help='TBA')
-    parser.add_argument('--b3', type=float, default=0.001,
+    parser.add_argument('--b3', type=float, default=0.1,
                         help='TBA')
 
     parser.add_argument('--like_coef', type=float, default=1.0,
