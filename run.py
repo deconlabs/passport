@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jan 16 10:17:54 2019
-@author: user
-"""
-
 from tensorboardX import SummaryWriter
 from collections import deque, defaultdict
 import numpy as np

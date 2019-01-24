@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jan 16 11:47:27 2019
-@author: user
-"""
 import numpy as np
 import random
 from collections import deque
+import sys
 
 
 class Agent:
@@ -45,10 +41,10 @@ class Agent:
         self.real_endeavor =\
             np.power(np.e, np.array(self.endeavor) * np.log(len(self.endeavor)) / (len(self.endeavor) - 1)) - 1
         self.action = 0  # index: 0 or 1 or 2 or ...
-        self.my_like = 0
+        self.my_like = 0.
         self.review_history = deque(maxlen=args.window)  # 1 or 0
-        self.cost = args.cost
-        self.asset = 0
+        self.cost = 0.
+        self.asset = 0.
 
         self.q_table = np.zeros_like(self.endeavor)
         self.beta_table = self.softmax(self.q_table)
@@ -100,7 +96,7 @@ class Agent:
             -   물론 확률적으로 받으므로 무조건적으로 크게 받는 것은 아니며, 크게 받을 확률이 커지는 것.
         """
         coef1 = self.args.like_coef
-        coef2 = coef1 / (len(self.review_history) + self.args.tiny_value)  # coef1에 종속적
+        coef2 = coef1 / (len(self.review_history) + sys.float_info.epsilon)  # coef1에 종속적
         mu = coef1 * (self.action) + coef2 * score
 
         """
@@ -186,7 +182,7 @@ class Agent:
         else:
             # asset과 endeavor에 의해 결정
             """
-            *   asset은 비율이므로 에이전트의 수를 곱하여 정규화 
+            *   asset은 비율이므로 에이전트의 수를 곱하여 정규화
             """
             b0 = self.args.b0
             b1 = self.args.b1 * self.args.n_agent

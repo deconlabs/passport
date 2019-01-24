@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jan 21 19:12:17 2019
-
-@author: jeffrey
-"""
-
 import numpy as np
 
 # reward  distribution system

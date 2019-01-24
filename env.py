@@ -20,7 +20,7 @@ class Env:
         self.n_agent = args.n_agent
         self.action_space = np.arange(0., args.range_endeavor)
         self.n_actions = len(self.action_space)
-        self.total_like = 0
+        self.total_like = 0.
         self.reward_pool = args.reward_pool
 
     def step(self, agents):
