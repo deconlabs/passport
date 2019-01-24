@@ -6,7 +6,6 @@ Created on Wed Jan 16 11:47:27 2019
 import numpy as np
 import random
 from collections import deque
-import math
 
 
 class Agent:
@@ -31,12 +30,12 @@ class Agent:
 
     def get_my_like(self):
         """받는 좋아요 수: 노력(=빡침도), 그리고 과거 리뷰 개수(modified)에 정비례"""
-        if self.action==0:
+        if self.action == 0:
             return 0
         # 리뷰 점수
         score = sum(self.review_history)  # 범위: 0부터 최대 window=5 까지
-#        if sum(self.review_history) == 0:
-#            score = len(self.review_history) + 1  # 만일 리뷰를 하나도 쓰지 않다가 작성할 경우, 최대값 + 1
+        # 만일 리뷰를 하나도 쓰지 않다가 작성할 경우, 최대값 + 1
+        # if sum(self.review_history) == 0: score = len(self.review_history) + 1
 
         # 정규분포를 취한 후 연속적인 범위가 나올 수 있도록
         coef1 = 1.
