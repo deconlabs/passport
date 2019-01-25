@@ -131,7 +131,7 @@ if __name__ == '__main__':
     main
     """
     print(sys.argv)
-    # mechanism, n_agent, reward_pool, review_history
+    # mechanism, n_agent, reward_pool, review_history, window
     my_args = sys.argv
 
     """
@@ -141,8 +141,8 @@ if __name__ == '__main__':
     random.seed(950327)
 
     args = argparser()
-    writer = SummaryWriter("./visualization/{}/{}/{}/{}".format(
-        my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:]))
+    writer = SummaryWriter("./visualization/{}/{}/{}/{}/{}".format(
+        my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
 
     """
     default n_average=100
