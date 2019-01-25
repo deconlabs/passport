@@ -10,7 +10,7 @@ def list_formated_print(flist):
 
 def draw_graphs(
         writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
-    draw_review_ratio(writer, args, agents, returns, costs, rewards,
+    draw_action_ratio(writer, args, agents, returns, costs, rewards,
                       actions, highests, total_beta_lists, likes, episode)
     draw_about_reward(writer, args, agents, returns, costs, rewards,
                       actions, highests, total_beta_lists, likes, episode)
@@ -22,7 +22,7 @@ def draw_graphs(
 
 # """x축: episode"""
 # review_ratio 대신 action_ratio
-def draw_review_ratio(
+def draw_action_ratio(
         writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
     writer.add_scalar("action_ratio", sum(actions) / ((args.range_endeavor - 1) * len(agents)), episode)
 

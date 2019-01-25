@@ -63,6 +63,10 @@ class Env:
         """
         리뷰 작성의 비율
             -   에이전트 중 몇 명이 리뷰를 작성하였는가.
+            -   현재 미사용 값
+            -   왜냐하면 0일때만 0이고, 0보다 크면 무조건 1이기에 값의 분포가 충분히 반영되지 못함
+            -   대신 visualization.py에서 action_ratio을 구하여 사용
+                -   action의 크기가 반영된 review_ratio로 생각할 수 있다. (보다 정확) 
         """
         review_ratio = n_reviewers / len(agents)
 
