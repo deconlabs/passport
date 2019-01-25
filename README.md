@@ -11,7 +11,7 @@ python3 run.py [--<arg1>=<value1>] [--<arg2>=<value2>] ...
 
 ### Example
 ```bash
-python3 run.py --n_agent=20 --n_episode=5000 --n_average=3 --record_term_1=100 --mechanism="proportional"
+python3 run.py --mechanism="proportional" --n_agent=100 --reward_pool=500 --review_history=False --window=5
 ```
 
 ## View Tensorboard
