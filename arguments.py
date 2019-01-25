@@ -24,14 +24,16 @@ def argparser():
     parser.add_argument('--reward_pool', type=int, default=500,
                         help='The total rewards which reviewers divide up')
 
-    parser.add_argument('--review_history', type=bool, default=False,
-                        help='빡침도? 패자부활전? 뉴비보너스?')
+    parser.add_argument('--review_history', type=int, default=0,
+                        help='0: score = sum(review_history)'
+                             '1: score = sum(review_history), if sum(review_history) == 0: score += 1'
+                             '2: socre = len(review_history) - sum(review_history)')
 
     """Visualization"""
     parser.add_argument('--record_term_1', type=int, default=100,
                         help='The term of episodes recording')
 
-    parser.add_argument('--record_term_2', type=int, default=200,
+    parser.add_argument('--record_term_2', type=int, default=10,
                         help='The term of episodes recording')
 
     """Coefficients for Like Function"""
