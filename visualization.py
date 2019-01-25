@@ -8,7 +8,8 @@ def list_formated_print(flist):
             print(str(format(elem * 100, '7.2f')) + ',', end='')
 
 
-def draw_graphs(writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
+def draw_graphs(
+        writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
     draw_review_ratio(writer, args, agents, returns, costs, rewards,
                       actions, highests, total_beta_lists, likes, episode)
     draw_about_reward(writer, args, agents, returns, costs, rewards,
@@ -21,13 +22,15 @@ def draw_graphs(writer, args, agents, returns, costs, rewards, actions, highests
 
 # """x축: episode"""
 # review_ratio 대신 action_ratio
-def draw_review_ratio(writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
+def draw_review_ratio(
+        writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
     writer.add_scalar("action_ratio", sum(actions) / ((args.range_endeavor - 1) * len(agents)), episode)
 
 
 # """x축: episode"""
 # reward, return, cost, and like
-def draw_about_reward(writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
+def draw_about_reward(
+        writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
     res_dict = {}
     for i in range(len(agents)):
         res_dict['agent_' + str(i) + '_reward'] = rewards[i]
@@ -45,7 +48,8 @@ def draw_about_reward(writer, args, agents, returns, costs, rewards, actions, hi
 
 # """x축: episode"""
 # weighted_endeavor
-def draw_weighted_endeavor(writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
+def draw_weighted_endeavor(
+        writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
     res_dict = {}
     for i in range(len(agents)):
         res_dict['agent_' + str(i)] = 0
@@ -56,7 +60,8 @@ def draw_weighted_endeavor(writer, args, agents, returns, costs, rewards, action
 
 
 # highest
-def draw_highest(writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
+def draw_highest(
+        writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode):
     res_dict = {}
     for i in range(len(agents)):
         res_dict['agent_' + str(i)] = highests[i]
