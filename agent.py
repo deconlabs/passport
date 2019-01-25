@@ -79,7 +79,8 @@ class Agent:
         score = sum(self.review_history)  # 범위: 0부터 최대 window=5 까지
 
         # 만일 리뷰를 하나도 쓰지 않다가 작성할 경우, 최대값 + 1
-        # if sum(self.review_history) == 0: score = len(self.review_history) + 1
+        if sum(self.review_history) == 0:
+            score = self.args.window + 1
 
         """
         *   tiny_value를 더하여 0으로 나누는 경우를 방지
@@ -96,8 +97,9 @@ class Agent:
             -   물론 확률적으로 받으므로 무조건적으로 크게 받는 것은 아니며, 크게 받을 확률이 커지는 것.
         """
         coef1 = self.args.like_coef_1
-        coef2 = self.args.like_coef_2
-        mu = coef1 * (self.action) + coef2 / (len(self.review_history) + sys.float_info.epsilon) * score
+        coef2 = self.args.like_coef_2 / \
+            (self.args.window + sys.float_info.epsilon)
+        mu = coef1 * (self.action) + coef2 * score
 
         """
         *   좋아요만 있기에, 음수는 있을 수 없으므로, 0으로 예외처리
@@ -224,5 +226,6 @@ class Agent:
         확률이 적었던 선택은 크게 업데이트 할 수 있도록
             -   beta_table의 값으로 나눠줌.
         """
-        self.q_table[action] += self.args.lr * (q2 - q1) / self.beta_table[action]
+        self.q_table[action] += self.args.lr * \
+            (q2 - q1) / self.beta_table[action]
         self.beta_table = self.softmax(self.q_table)

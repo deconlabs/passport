@@ -7,15 +7,7 @@ from arguments import argparser
 
 from env import Env
 
-
-def list_format_print(flist):
-    print('[ ', end='')
-    for i, elem in enumerate(flist):
-        if i == len(flist) - 1:
-            print(str(format(elem * 100, '7.2f')), end='')
-            print(' ]')
-        else:
-            print(str(format(elem * 100, '7.2f')) + ',', end='')
+from visualization import list_formated_print, draw_graphs
 
 
 def distribute_asset(agents, n_agent):
@@ -57,7 +49,7 @@ def run(env, agents, args):
     :param env: 정의한 환경
     :param agents: 참여 에이전트들
     :param args: 하이퍼파라메터들
-    :return:    res_returns, res_costs, res_rewards, res_actions, res_highests, res_beta_tables
+    :return:    res_returns, res_costs, res_rewards, res_actions, res_highests, res_beta_tables, res_likes
                 for each agents
     """
     res_returns = []
@@ -66,6 +58,7 @@ def run(env, agents, args):
     res_actions = []
     res_highests = []
     res_total_beta_lists = []
+    res_likes = []
 
     """
     환경에서 에이전트를 구동하는 함수
@@ -94,7 +87,8 @@ def run(env, agents, args):
         *   rewards: list of float
         *   likes: list of float
         """
-        review_ratio, actions, returns, costs, rewards, likes = env.step(agents)
+        review_ratio, actions, returns, costs, rewards, likes = env.step(
+            agents)
 
         """
         get_action으로 각 에이전트의 action을 갱신하고,
@@ -106,16 +100,10 @@ def run(env, agents, args):
         total_beta_lists = [agent.beta_table for agent in agents]
 
         """
-        시각화 부분.
-
         default: record_term_1 = 10
         default: record_term_2 = 100
         """
         if episode % args.record_term_1 == 0:
-            # writer.add_scalar("action_ratio", sum([agent.action / env. for agent in agents]), episode)
-            pass
-
-        if episode % args.record_term_2 == 0:
             """
             record
             """
@@ -125,13 +113,14 @@ def run(env, agents, args):
             res_actions.append(actions)
             res_highests.append(highests)
             res_total_beta_lists.append(total_beta_lists)
+            res_likes.append(likes)
 
         """
         다음 에피소드를 위해 총 좋아요의 수를 초기화
         """
         env.total_like = 0
 
-    return res_returns, res_costs, res_rewards, res_actions, res_highests, res_total_beta_lists
+    return res_returns, res_costs, res_rewards, res_actions, res_highests, res_total_beta_lists, res_likes
 
 
 if __name__ == '__main__':
@@ -146,7 +135,7 @@ if __name__ == '__main__':
     random.seed(950327)
 
     args = argparser()
-    writer = SummaryWriter("./visualization/{}".format(args.mechanism + "_" + str(args.n_agent)))
+    writer = SummaryWriter("./visualization/{}".format(args.mechanism))
 
     """
     default n_average=10
@@ -157,11 +146,13 @@ if __name__ == '__main__':
     all_actions = []
     all_highests = []
     all_total_beta_lists = []
+    all_likes = []
 
     for i in range(args.n_average):
         env = Env(args)
         agents = [Agent(env.action_space, args) for i in range(args.n_agent)]
-        returns, costs, rewards, actions, highests, total_beta_lists = run(env, agents, args)
+        returns, costs, rewards, actions, highests, total_beta_lists, likes = run(
+            env, agents, args)
 
         all_returns.append(returns)
         all_costs.append(costs)
@@ -169,6 +160,7 @@ if __name__ == '__main__':
         all_actions.append(actions)
         all_highests.append(highests)
         all_total_beta_lists.append(total_beta_lists)
+        all_likes.append(likes)
 
         print("loop", i, "done")
 
@@ -176,15 +168,16 @@ if __name__ == '__main__':
     average
     per recorded episode
     """
-    for episode in range(int(args.n_episode / args.record_term_2) + 1):
+    for episode in range(int(args.n_episode / args.record_term_1) + 1):
         avg_returns = np.zeros(args.n_agent)
         avg_costs = np.zeros(args.n_agent)
         avg_rewards = np.zeros(args.n_agent)
         avg_actions = np.zeros(args.n_agent)
         avg_highests = np.zeros(args.n_agent)
         avg_total_beta_lists = np.zeros((args.n_agent, args.range_endeavor))
+        avg_likes = np.zeros(args.n_agent)
 
-        print("\n\nepisode {}".format(episode * args.record_term_2))
+        print("\n\nepisode {}".format(episode * args.record_term_1))
 
         for i in range(args.n_average):
             avg_returns += np.array(all_returns[i][episode]) / args.n_average
@@ -192,11 +185,15 @@ if __name__ == '__main__':
             avg_rewards += np.array(all_rewards[i][episode]) / args.n_average
             avg_actions += np.array(all_actions[i][episode]) / args.n_average
             avg_highests += np.array(all_highests[i][episode]) / args.n_average
-            avg_total_beta_lists += np.array(all_total_beta_lists[i][episode]) / args.n_average
+            avg_total_beta_lists += np.array(
+                all_total_beta_lists[i][episode]) / args.n_average
+            avg_likes += np.array(all_likes[i][episode]) / args.n_average
 
         """
-        indexes
+        시각화 부분
         """
+
+        """console"""
         print("\t\t\t\t\t\t\t\t\t\t\t\t\t", end='')
         for j in range(len(avg_total_beta_lists[0])):
             if j == len(avg_total_beta_lists[0]) - 1:
@@ -204,9 +201,6 @@ if __name__ == '__main__':
             else:
                 print(j, end='\t ')
 
-        """
-        console
-        """
         for j in range(len(agents)):
             print(format(j, '2d'),
                   "\treturn:", format(avg_returns[j], '5.2f'),
@@ -214,7 +208,13 @@ if __name__ == '__main__':
                   "\treward:", format(avg_rewards[j], '5.2f'),
                   "\taction:", format(avg_actions[j], '5.2f'),
                   "\thighest:", format(avg_highests[j], '5.2f'),
+                  "\tlike:", format(avg_likes[j], '5.2f'),
                   "\tbeta_table(%): ", end='')
-            list_format_print(avg_total_beta_lists[j])
+            list_formated_print(avg_total_beta_lists[j])
+
+        """tensorboard"""
+        draw_graphs(writer, args, agents,
+                    avg_returns, avg_costs, avg_rewards, avg_actions, avg_highests, avg_total_beta_lists, avg_likes,
+                    episode * args.record_term_1)
 
     writer.close()

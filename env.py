@@ -52,7 +52,8 @@ class Env:
             else:
                 agent.review_history.append(0)
 
-        returns = self.get_return(likes, self.total_like, n_reviewers, self.args.mechanism)
+        returns = self.get_return(
+            likes, self.total_like, n_reviewers, self.args.mechanism)
         costs = [float(agent.get_cost()) for i, agent in enumerate(agents)]
         rewards = [ret - cost for ret, cost in zip(returns, costs)]
 
