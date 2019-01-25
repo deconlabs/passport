@@ -64,10 +64,6 @@ def draw_highest(writer, args, agents, returns, costs, rewards, actions, highest
     writer.add_scalars("highest", res_dict, episode)
 
 
-"""
-기타
-
-*   Use matplotlib
-"""
+# """기타: Use matplotlib"""
 # agent별 asset 분포 (pareto)
 # endeavor와 real_endeavor의 모양

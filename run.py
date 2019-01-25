@@ -194,7 +194,7 @@ if __name__ == '__main__':
         """
 
         """console"""
-        print("\t\t\t\t\t\t\t\t\t\t\t\t\t", end='')
+        print("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t", end='')
         for j in range(len(avg_total_beta_lists[0])):
             if j == len(avg_total_beta_lists[0]) - 1:
                 print(j)
