@@ -8,10 +8,10 @@ def argparser():
     parser.add_argument('--n_agent', type=int, default=100,
                         help='The number of agents in simulation')
 
-    parser.add_argument('--n_episode', type=int, default=500,
+    parser.add_argument('--n_episode', type=int, default=5000,
                         help='The number of episodes for simulation')
 
-    parser.add_argument('--n_average', type=int, default=10,
+    parser.add_argument('--n_average', type=int, default=100,
                         help='The number of times which need for calculating average')
 
     parser.add_argument('--range_endeavor', type=int, default=10,
@@ -21,17 +21,17 @@ def argparser():
                         help='Select the mechanism of getting return(gain):'
                              'uniform, exponential, and proportional(default)')
 
-    parser.add_argument('--reward_pool', type=int, default=100,
+    parser.add_argument('--reward_pool', type=int, default=500,
                         help='The total rewards which reviewers divide up')
 
     parser.add_argument('--review_history', type=bool, default=False,
                         help='빡침도? 패자부활전? 뉴비보너스?')
 
     """Visualization"""
-    parser.add_argument('--record_term_1', type=int, default=10,
+    parser.add_argument('--record_term_1', type=int, default=100,
                         help='The term of episodes recording')
 
-    parser.add_argument('--record_term_2', type=int, default=100,
+    parser.add_argument('--record_term_2', type=int, default=200,
                         help='The term of episodes recording')
 
     """Coefficients for Like Function"""

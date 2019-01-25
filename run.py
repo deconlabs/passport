@@ -1,13 +1,13 @@
 from tensorboardX import SummaryWriter
 import numpy as np
 import random
+import sys
 
 from agent import Agent
 from arguments import argparser
-
 from env import Env
-
-from visualization import list_formated_print, draw_graphs
+from visualization import draw_graphs
+# from visualization import list_formated_print
 
 
 def distribute_asset(agents, n_agent):
@@ -107,6 +107,8 @@ def run(env, agents, args):
             """
             record
             """
+            print("current episode", episode)
+
             res_returns.append(returns)
             res_costs.append(costs)
             res_rewards.append(rewards)
@@ -127,6 +129,9 @@ if __name__ == '__main__':
     """
     main
     """
+    # print(sys.argv)
+    # mechanism, n_agent, reward_pool, review_history, window
+    my_args = sys.argv
 
     """
     set random seeds
@@ -135,7 +140,8 @@ if __name__ == '__main__':
     random.seed(950327)
 
     args = argparser()
-    writer = SummaryWriter("./visualization/{}".format(args.mechanism))
+    writer = SummaryWriter("./visualization/{}/{}/{}/{}/{}".format(
+        my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
 
     """
     default n_average=10
@@ -194,6 +200,7 @@ if __name__ == '__main__':
         """
 
         """console"""
+        """
         print("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t", end='')
         for j in range(len(avg_total_beta_lists[0])):
             if j == len(avg_total_beta_lists[0]) - 1:
@@ -211,6 +218,7 @@ if __name__ == '__main__':
                   "\tlike:", format(avg_likes[j], '5.2f'),
                   "\tbeta_table(%): ", end='')
             list_formated_print(avg_total_beta_lists[j])
+        """
 
         """tensorboard"""
         draw_graphs(writer, args, agents,
