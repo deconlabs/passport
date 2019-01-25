@@ -24,6 +24,9 @@ def argparser():
     parser.add_argument('--reward_pool', type=int, default=100,
                         help='The total rewards which reviewers divide up')
 
+    parser.add_argument('--review_history', type=bool, default=False,
+                        help='빡침도? 패자부활전? 뉴비보너스?')
+
     """Visualization"""
     parser.add_argument('--record_term_1', type=int, default=10,
                         help='The term of episodes recording')

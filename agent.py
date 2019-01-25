@@ -79,7 +79,9 @@ class Agent:
         score = sum(self.review_history)  # 범위: 0부터 최대 window=5 까지
 
         # 만일 리뷰를 하나도 쓰지 않다가 작성할 경우, 최대값 + 1
-        # if sum(self.review_history) == 0: score = self.args.window + 1
+        if self.args.review_history:
+            if sum(self.review_history) == 0:
+                score = self.args.window + 1
 
         """
         *   tiny_value를 더하여 0으로 나누는 경우를 방지
