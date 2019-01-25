@@ -10,6 +10,8 @@ from visualization import draw_graphs
 # from visualization import list_formated_print
 import pickle
 import os
+
+
 def distribute_asset(agents, n_agent):
     """
     :param agents: 참여 에이전트들
@@ -89,7 +91,8 @@ def run(env, agents, args):
         *   rewards: list of float
         *   likes: list of float
         """
-        review_ratio, actions, returns, costs, rewards, likes = env.step(agents)
+        review_ratio, actions, returns, costs, rewards, likes = env.step(
+            agents)
 
         """
         get_action으로 각 에이전트의 action을 갱신하고, 리스트 형태로 저장함.
@@ -171,24 +174,26 @@ if __name__ == '__main__':
 
         print("loop", i, "done")
 
-    
-    meta_dict={
-            'all_returns' : all_returns,
-            'all_costs' : all_costs,
-            'all_rewards' : all_rewards,
-            'all_actions' : all_actions,
-            'all_highests' : all_highests,
-            'all_total_beta_lists' : all_total_beta_lists,
-            'all_likes' : all_likes
-            }
-    
-    filename="./data/{}_{}_{}_{}_{}.pkl".format(
+    """
+    files save
+    """
+    meta_dict = {
+        'all_returns': all_returns,
+        'all_costs': all_costs,
+        'all_rewards': all_rewards,
+        'all_actions': all_actions,
+        'all_highests': all_highests,
+        'all_total_beta_lists': all_total_beta_lists,
+        'all_likes': all_likes
+    }
+
+    filename = "./data/{}_{}_{}_{}_{}.pkl".format(
         my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:])
     if not os.path.exists('./data'):
         os.mkdir('./data')
-    with open(filename,'wb') as f:
-        pickle.dump(meta_dict,f)
-        
+    with open(filename, 'wb') as f:
+        pickle.dump(meta_dict, f)
+
     """
     get average values per recorded episode
     """
