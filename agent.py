@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Wed Jan 16 11:47:27 2019
-@author: user
-"""
 import numpy as np
 import random
 from collections import deque
+import sys
 
 
 class Agent:
@@ -45,10 +41,10 @@ class Agent:
         self.real_endeavor =\
             np.power(np.e, np.array(self.endeavor) * np.log(len(self.endeavor)) / (len(self.endeavor) - 1)) - 1
         self.action = 0  # index: 0 or 1 or 2 or ...
-        self.my_like = 0
+        self.my_like = 0.
         self.review_history = deque(maxlen=args.window)  # 1 or 0
-        self.cost = args.cost
-        self.asset = 0
+        self.cost = 0.
+        self.asset = 0.
 
         self.q_table = np.zeros_like(self.endeavor)
         self.beta_table = self.softmax(self.q_table)
@@ -83,7 +79,9 @@ class Agent:
         score = sum(self.review_history)  # 범위: 0부터 최대 window=5 까지
 
         # 만일 리뷰를 하나도 쓰지 않다가 작성할 경우, 최대값 + 1
-        # if sum(self.review_history) == 0: score = len(self.review_history) + 1
+        if self.args.review_history:
+            if sum(self.review_history) == 0:
+                score = self.args.window + 1
 
         """
         *   tiny_value를 더하여 0으로 나누는 경우를 방지
@@ -99,8 +97,9 @@ class Agent:
             -   본 값이 클 수록 받는 좋아요의 차이가 크게 차이나게 됨.
             -   물론 확률적으로 받으므로 무조건적으로 크게 받는 것은 아니며, 크게 받을 확률이 커지는 것.
         """
-        coef1 = self.args.like_coef
-        coef2 = coef1 / (len(self.review_history) + self.args.tiny_value)  # coef1에 종속적
+        coef1 = self.args.like_coef_1
+        coef2 = self.args.like_coef_2 / \
+            (self.args.window + sys.float_info.epsilon)
         mu = coef1 * (self.action) + coef2 * score
 
         """
@@ -186,7 +185,7 @@ class Agent:
         else:
             # asset과 endeavor에 의해 결정
             """
-            *   asset은 비율이므로 에이전트의 수를 곱하여 정규화 
+            *   asset은 비율이므로 에이전트의 수를 곱하여 정규화
             """
             b0 = self.args.b0
             b1 = self.args.b1 * self.args.n_agent
@@ -228,5 +227,6 @@ class Agent:
         확률이 적었던 선택은 크게 업데이트 할 수 있도록
             -   beta_table의 값으로 나눠줌.
         """
-        self.q_table[action] += self.args.lr * (q2 - q1) / self.beta_table[action]
+        self.q_table[action] += self.args.lr * \
+            (q2 - q1) / self.beta_table[action]
         self.beta_table = self.softmax(self.q_table)

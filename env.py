@@ -20,7 +20,7 @@ class Env:
         self.n_agent = args.n_agent
         self.action_space = np.arange(0., args.range_endeavor)
         self.n_actions = len(self.action_space)
-        self.total_like = 0
+        self.total_like = 0.
         self.reward_pool = args.reward_pool
 
     def step(self, agents):
@@ -39,7 +39,7 @@ class Env:
         n_reviewers = 0
         likes = []
         for agent in agents:
-            actions.append(agent.get_action())
+            actions.append(agent.get_action())  # 확률론적
 
             agent.my_like = agent.get_my_like()
             likes.append(agent.my_like)
@@ -52,7 +52,8 @@ class Env:
             else:
                 agent.review_history.append(0)
 
-        returns = self.get_return(likes, self.total_like, n_reviewers, self.args.mechanism)
+        returns = self.get_return(
+            likes, self.total_like, n_reviewers, self.args.mechanism)
         costs = [float(agent.get_cost()) for i, agent in enumerate(agents)]
         rewards = [ret - cost for ret, cost in zip(returns, costs)]
 
@@ -60,16 +61,12 @@ class Env:
             agent.learn(actions[idx], rewards[idx])
 
         """
-        다음 에피소드를 위해 총 좋아요의 수를 초기화
-        """
-        self.total_like = 0
-
-        """
         리뷰 작성의 비율
             -   에이전트 중 몇 명이 리뷰를 작성하였는가.
         """
-        review_ratio = n_reviewers/len(agents)
-        return [review_ratio, actions, returns, costs, rewards, likes]
+        review_ratio = n_reviewers / len(agents)
+
+        return review_ratio, actions, returns, costs, rewards, likes
 
     def get_return(self, likes, total_like, n_reviewers, mechanism):
         """

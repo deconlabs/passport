@@ -1,19 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jan 21 19:12:17 2019
-
-@author: jeffrey
-"""
-
 import numpy as np
-
-# reward  distribution system
-# how to change get_reward()  function
-
-# encourage influentail people
-# previous: porportional to like [0.1,0.3,0.4,0.2]
-# after: quadratically proportianl [0.03333333, 0.3       , 0.53333333, 0.13333333]
 
 
 # UNIFORM
