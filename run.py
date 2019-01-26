@@ -329,8 +329,7 @@ if __name__ == '__main__':
     ax = sns.heatmap(np.array(weighted_endeavor_list))
     ax.xaxis.tick_top()
     # writer.add_figure("weighted_avg_endeavor_heatmap", fig)
-    plt.savefig("./visualization/{}/{}/{}/{}/{}/images/weighted_endeavor".format(
-            my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
+    plt.savefig("./visualization/{}/{}/{}/{}/{}/images/weighted_endeavor".format(my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
     plt.close(fig)
 
     """details beta table heatmap"""
