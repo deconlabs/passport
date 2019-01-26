@@ -281,7 +281,7 @@ if __name__ == '__main__':
         """
 
         """tensorboard"""
-        """
+        # """
         draw_graphs(writer, args, agents,
                     avg_returns,
                     avg_costs,
@@ -311,7 +311,7 @@ if __name__ == '__main__':
                     avg_total_beta_lists + (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
                     avg_likes + (1.96 / pow(args.n_average, 0.5)) * std_likes,
                     episode * args.record_term_1, "upper_")
-        """
+        # """
 
         """heatmap"""
         # weighted average endeavor
@@ -319,11 +319,19 @@ if __name__ == '__main__':
             [sum(avg_total_beta_lists[k] * np.arange(0., args.range_endeavor)) for k in range(len(agents))])
         weighted_endeavor_list.append(weighted_endeavor)
 
+    if not os.path.exists("./visualization/{}/{}/{}/{}/{}/images".format(
+            my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:])):
+        os.mkdir("./visualization/{}/{}/{}/{}/{}/images".format(
+            my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
+
     # weighted average endeavor
     fig = plt.figure()
     ax = sns.heatmap(np.array(weighted_endeavor_list))
     ax.xaxis.tick_top()
-    writer.add_figure("weighted_avg_endeavor_heatmap", fig)
+    # writer.add_figure("weighted_avg_endeavor_heatmap", fig)
+    plt.savefig("./visualization/{}/{}/{}/{}/{}/images/weighted_endeavor".format(
+            my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
+    plt.close(fig)
 
     """details beta table heatmap"""
     for episode in range(int(args.n_episode / args.record_term_2) + 1):
@@ -336,6 +344,9 @@ if __name__ == '__main__':
         fig = plt.figure()
         ax = sns.heatmap(avg_details.T)
         ax.xaxis.tick_top()
-        writer.add_figure("beta_table_heatmap", fig, episode)
+        # writer.add_figure("beta_table_heatmap", fig, episode)
+        plt.savefig("./visualization/{}/{}/{}/{}/{}/images/{}".format(
+            my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:], episode))
+        plt.close(fig)
 
     writer.close()
