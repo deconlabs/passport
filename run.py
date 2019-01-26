@@ -211,7 +211,8 @@ if __name__ == '__main__':
         sqr_avg_rewards = np.zeros(args.n_agent)
         sqr_avg_actions = np.zeros(args.n_agent)
         sqr_avg_highests = np.zeros(args.n_agent)
-        sqr_avg_total_beta_lists = np.zeros((args.n_agent, args.range_endeavor))
+        sqr_avg_total_beta_lists = np.zeros(
+            (args.n_agent, args.range_endeavor))
         sqr_avg_likes = np.zeros(args.n_agent)
 
         # print("\n\nepisode {}".format(episode * args.record_term_1))
