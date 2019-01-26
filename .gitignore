@@ -4,3 +4,4 @@ runs/
 .DS_Store
 *.xml
 .idea/passport.iml
+*.pkl
