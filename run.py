@@ -206,6 +206,13 @@ if __name__ == '__main__':
         avg_total_beta_lists = np.zeros((args.n_agent, args.range_endeavor))
         avg_likes = np.zeros(args.n_agent)
 
+        sqr_avg_returns = np.zeros(args.n_agent)
+        sqr_avg_costs = np.zeros(args.n_agent)
+        sqr_avg_rewards = np.zeros(args.n_agent)
+        sqr_avg_actions = np.zeros(args.n_agent)
+        sqr_avg_highests = np.zeros(args.n_agent)
+        sqr_avg_likes = np.zeros(args.n_agent)
+
         # print("\n\nepisode {}".format(episode * args.record_term_1))
 
         for i in range(args.n_average):
@@ -217,6 +224,20 @@ if __name__ == '__main__':
             avg_total_beta_lists += np.array(
                 all_total_beta_lists[i][episode]) / args.n_average
             avg_likes += np.array(all_likes[i][episode]) / args.n_average
+
+            sqr_avg_returns += np.power(np.array(all_returns[i][episode]), 2) / args.n_average
+            sqr_avg_costs += np.power(np.array(all_costs[i][episode]), 2) / args.n_average
+            sqr_avg_rewards += np.power(np.array(all_rewards[i][episode]), 2) / args.n_average
+            sqr_avg_actions += np.power(np.array(all_actions[i][episode]), 2) / args.n_average
+            sqr_avg_highests += np.power(np.array(all_highests[i][episode]), 2) / args.n_average
+            sqr_avg_likes += np.power(np.array(all_likes[i][episode]), 2) / args.n_average
+
+        std_returns = np.power(sqr_avg_returns - np.power(avg_returns, 2), 0.5)
+        std_costs = np.power(sqr_avg_costs - np.power(avg_costs, 2), 0.5)
+        std_rewards = np.power(sqr_avg_rewards - np.power(avg_rewards, 2), 0.5)
+        std_actions = np.power(sqr_avg_actions - np.power(avg_actions, 2), 0.5)
+        std_highests = np.power(sqr_avg_highests - np.power(avg_highests, 2), 0.5)
+        std_likes = np.power(sqr_avg_likes - np.power(avg_likes, 2), 0.5)
 
         """
         시각화 부분
@@ -241,9 +262,36 @@ if __name__ == '__main__':
                   "\tbeta_table(%): ", end='')
             list_formated_print(avg_total_beta_lists[j])
         """
+
+
+        print(avg_likes.shape)
+        print(avg_total_beta_lists.shape)
+
+
+
         """tensorboard"""
         draw_graphs(writer, args, agents,
                     avg_returns, avg_costs, avg_rewards, avg_actions, avg_highests, avg_total_beta_lists, avg_likes,
-                    episode * args.record_term_1)
+                    episode * args.record_term_1, "avg")
+
+        draw_graphs(writer, args, agents,
+                    avg_returns - 1.96 * std_returns,
+                    avg_costs - 1.96 * std_costs,
+                    avg_rewards - 1.96 * std_rewards,
+                    avg_actions - 1.96 * std_actions,
+                    avg_highests - 1.96 * std_highests,
+                    avg_total_beta_lists,
+                    avg_likes - 1.96 * std_likes,
+                    episode * args.record_term_1, "under")
+
+        draw_graphs(writer, args, agents,
+                    avg_returns + 1.96 * std_returns,
+                    avg_costs + 1.96 * std_costs,
+                    avg_rewards + 1.96 * std_rewards,
+                    avg_actions + 1.96 * std_actions,
+                    avg_highests + 1.96 * std_highests,
+                    avg_total_beta_lists,
+                    avg_likes + 1.96 * std_likes,
+                    episode * args.record_term_1, "upper")
 
     writer.close()
