@@ -24,7 +24,7 @@ def draw_graphs(
 # review_ratio 대신 action_ratio
 def draw_action_ratio(
         writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode, name):
-    writer.add_scalars(name + "_action_ratio", {"action_ratio": sum(actions) / ((args.range_endeavor - 1) * len(agents))}, episode)
+    writer.add_scalars("action_ratio", {name + "action_ratio": sum(actions) / ((args.range_endeavor - 1) * len(agents))}, episode)
 
 
 # """x축: episode"""
@@ -33,17 +33,17 @@ def draw_about_reward(
         writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode, name):
     res_dict = {}
     for i in range(len(agents)):
-        res_dict['agent_' + str(i) + '_reward'] = rewards[i]
-        res_dict['agent_' + str(i) + '_return'] = returns[i]
-        res_dict['agent_' + str(i) + '_cost'] = costs[i]
-        res_dict['agent_' + str(i) + '_like'] = likes[i]
+        res_dict[name + 'agent_' + str(i) + '_reward'] = rewards[i]
+        res_dict[name + 'agent_' + str(i) + '_return'] = returns[i]
+        res_dict[name + 'agent_' + str(i) + '_cost'] = costs[i]
+        res_dict[name + 'agent_' + str(i) + '_like'] = likes[i]
 
-    res_dict['/average_reward'] = sum(rewards) / len(rewards)
-    res_dict['/average_return'] = sum(returns) / len(returns)
-    res_dict['/average_cost'] = sum(costs) / len(costs)
-    res_dict['/average_like'] = sum(likes) / len(likes)
+    res_dict[name + '/average_reward'] = sum(rewards) / len(rewards)
+    res_dict[name + '/average_return'] = sum(returns) / len(returns)
+    res_dict[name + '/average_cost'] = sum(costs) / len(costs)
+    res_dict[name + '/average_like'] = sum(likes) / len(likes)
 
-    writer.add_scalars(name+"_about_reward", res_dict, episode)
+    writer.add_scalars("about_reward", res_dict, episode)
 
 
 # """x축: episode"""
@@ -52,11 +52,11 @@ def draw_weighted_endeavor(
         writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode, name):
     res_dict = {}
     for i in range(len(agents)):
-        res_dict['agent_' + str(i)] = 0
+        res_dict[name + 'agent_' + str(i)] = 0
         for j in range(len(total_beta_lists[i])):
-            res_dict['agent_' + str(i)] += total_beta_lists[i][j] * float(j)
+            res_dict[name + 'agent_' + str(i)] += total_beta_lists[i][j] * float(j)
 
-    writer.add_scalars(name+"_weighted_endeavor", res_dict, episode)
+    writer.add_scalars("weighted_endeavor", res_dict, episode)
 
 
 # highest
@@ -64,9 +64,9 @@ def draw_highest(
         writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode, name):
     res_dict = {}
     for i in range(len(agents)):
-        res_dict['agent_' + str(i)] = highests[i]
+        res_dict[name + 'agent_' + str(i)] = highests[i]
 
-    writer.add_scalars(name+"_highest", res_dict, episode)
+    writer.add_scalars("highest", res_dict, episode)
 
 
 # """기타: Use matplotlib"""
