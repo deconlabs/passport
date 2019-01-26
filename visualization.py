@@ -24,7 +24,8 @@ def draw_graphs(
 # review_ratio 대신 action_ratio
 def draw_action_ratio(
         writer, args, agents, returns, costs, rewards, actions, highests, total_beta_lists, likes, episode, name):
-    writer.add_scalars("action_ratio", {name + "action_ratio": sum(actions) / ((args.range_endeavor - 1) * len(agents))}, episode)
+    writer.add_scalars("action_ratio", {
+                       name + "action_ratio": sum(actions) / ((args.range_endeavor - 1) * len(agents))}, episode)
 
 
 # """x축: episode"""
