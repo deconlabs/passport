@@ -8,7 +8,7 @@ def argparser():
     parser.add_argument('--n_agent', type=int, default=100,
                         help='The number of agents in simulation')
 
-    parser.add_argument('--n_episode', type=int, default=5000,
+    parser.add_argument('--n_episode', type=int, default=500,
                         help='The number of episodes for simulation')
 
     parser.add_argument('--n_average', type=int, default=100,
@@ -30,10 +30,10 @@ def argparser():
                              '2: socre = len(review_history) - sum(review_history)')
 
     """Visualization"""
-    parser.add_argument('--record_term_1', type=int, default=100,
+    parser.add_argument('--record_term_1', type=int, default=10,
                         help='The term of episodes recording')
 
-    parser.add_argument('--record_term_2', type=int, default=10,
+    parser.add_argument('--record_term_2', type=int, default=5,
                         help='The term of episodes recording')
 
     """Coefficients for Like Function"""

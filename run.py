@@ -2,18 +2,17 @@ from tensorboardX import SummaryWriter
 import numpy as np
 import random
 import sys
+import pickle
+import os
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 from agent import Agent
 from arguments import argparser
 from env import Env
 from visualization import draw_graphs
 # from visualization import list_formated_print
-import pickle
-import os
-import matplotlib.pyplot as plt
-#plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
-#plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = True
-import seaborn as sns
+
 
 def distribute_asset(agents, n_agent):
     """
@@ -55,9 +54,10 @@ def run(env, agents, args):
     :param env: 정의한 환경
     :param agents: 참여 에이전트들
     :param args: 하이퍼파라메터들
-    :return:    res_returns, res_costs, res_rewards, res_actions, res_highests, res_beta_tables, res_likes
-                for each agents
-                평균을 내기 위해 return함
+    :return:    res_returns, res_costs, res_rewards, res_actions, res_highests, res_beta_tables, res_likes,
+                detail_beta_lists
+                    -   for each agents
+                    -   평균을 내기 위해 return함
     """
     res_returns = []
     res_costs = []
@@ -66,6 +66,8 @@ def run(env, agents, args):
     res_highests = []
     res_total_beta_lists = []
     res_likes = []
+
+    detail_beta_lists = []
 
     """
     환경에서 에이전트를 구동하는 함수
@@ -94,8 +96,7 @@ def run(env, agents, args):
         *   rewards: list of float
         *   likes: list of float
         """
-        review_ratio, actions, returns, costs, rewards, likes = env.step(
-            agents)
+        review_ratio, actions, returns, costs, rewards, likes = env.step(agents)
 
         """
         get_action으로 각 에이전트의 action을 갱신하고, 리스트 형태로 저장함.
@@ -107,8 +108,8 @@ def run(env, agents, args):
         total_beta_lists = [agent.beta_table for agent in agents]
 
         """
-        default: record_term_1 = 100
-        default: record_term_2 = 10
+        default: record_term_1 = 10
+        default: record_term_2 = 5
         """
         if episode % args.record_term_1 == 0:
             """
@@ -124,12 +125,19 @@ def run(env, agents, args):
             res_total_beta_lists.append(total_beta_lists)
             res_likes.append(likes)
 
+        if episode % args.record_term_2 == 0:
+            """
+            record
+            """
+            detail_beta_lists.append(total_beta_lists)
+
         """
         다음 에피소드를 위해 총 좋아요의 수를 초기화
         """
         env.total_like = 0
 
-    return res_returns, res_costs, res_rewards, res_actions, res_highests, res_total_beta_lists, res_likes
+    return res_returns, res_costs, res_rewards, res_actions, res_highests, res_total_beta_lists, res_likes,\
+        detail_beta_lists
 
 
 if __name__ == '__main__':
@@ -160,12 +168,12 @@ if __name__ == '__main__':
     all_highests = []
     all_total_beta_lists = []
     all_likes = []
+    all_details = []
 
     for i in range(args.n_average):
         env = Env(args)
         agents = [Agent(env.action_space, args) for i in range(args.n_agent)]
-        returns, costs, rewards, actions, highests, total_beta_lists, likes = run(
-            env, agents, args)
+        returns, costs, rewards, actions, highests, total_beta_lists, likes, details = run(env, agents, args)
 
         all_returns.append(returns)
         all_costs.append(costs)
@@ -174,6 +182,7 @@ if __name__ == '__main__':
         all_highests.append(highests)
         all_total_beta_lists.append(total_beta_lists)
         all_likes.append(likes)
+        all_details.append(details)
 
         print("loop", i, "done")
 
@@ -187,7 +196,8 @@ if __name__ == '__main__':
         'all_actions': all_actions,
         'all_highests': all_highests,
         'all_total_beta_lists': all_total_beta_lists,
-        'all_likes': all_likes
+        'all_likes': all_likes,
+        'all_details_total_beta_lists': all_details
     }
 
     filename = "./data/{}_{}_{}_{}_{}.pkl".format(
@@ -200,8 +210,8 @@ if __name__ == '__main__':
     """
     get average values per recorded episode
     """
-    weighted_endeavor_list=[]
-    
+    weighted_endeavor_list = []
+
     for episode in range(int(args.n_episode / args.record_term_1) + 1):
         avg_returns = np.zeros(args.n_agent)
         avg_costs = np.zeros(args.n_agent)
@@ -216,8 +226,7 @@ if __name__ == '__main__':
         sqr_avg_rewards = np.zeros(args.n_agent)
         sqr_avg_actions = np.zeros(args.n_agent)
         sqr_avg_highests = np.zeros(args.n_agent)
-        sqr_avg_total_beta_lists = np.zeros(
-            (args.n_agent, args.range_endeavor))
+        sqr_avg_total_beta_lists = np.zeros((args.n_agent, args.range_endeavor))
         sqr_avg_likes = np.zeros(args.n_agent)
 
         # print("\n\nepisode {}".format(episode * args.record_term_1))
@@ -272,50 +281,61 @@ if __name__ == '__main__':
         """
 
         """tensorboard"""
-#        draw_graphs(writer, args, agents,
-#                    avg_returns,
-#                    avg_costs,
-#                    avg_rewards,
-#                    avg_actions,
-#                    avg_highests,
-#                    avg_total_beta_lists,
-#                    avg_likes,
-#                    episode * args.record_term_1, "avg_")
-#
-#        draw_graphs(writer, args, agents,
-#                    avg_returns - (1.96 / pow(args.n_average, 0.5)) * std_returns,
-#                    avg_costs - (1.96 / pow(args.n_average, 0.5)) * std_costs,
-#                    avg_rewards - (1.96 / pow(args.n_average, 0.5)) * std_rewards,
-#                    avg_actions - (1.96 / pow(args.n_average, 0.5)) * std_actions,
-#                    avg_highests - (1.96 / pow(args.n_average, 0.5)) * std_highests,
-#                    avg_total_beta_lists - (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
-#                    avg_likes - (1.96 / pow(args.n_average, 0.5)) * std_likes,
-#                    episode * args.record_term_1, "under_")
-#
-#        draw_graphs(writer, args, agents,
-#                    avg_returns + (1.96 / pow(args.n_average, 0.5)) * std_returns,
-#                    avg_costs + (1.96 / pow(args.n_average, 0.5)) * std_costs,
-#                    avg_rewards + (1.96 / pow(args.n_average, 0.5)) * std_rewards,
-#                    avg_actions + (1.96 / pow(args.n_average, 0.5)) * std_actions,
-#                    avg_highests + (1.96 / pow(args.n_average, 0.5)) * std_highests,
-#                    avg_total_beta_lists + (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
-#                    avg_likes + (1.96 / pow(args.n_average, 0.5)) * std_likes,
-#                    episode * args.record_term_1, "upper_")
-        
-        fig=plt.figure()
-        ax=sns.heatmap(avg_total_beta_lists.T)
-        ax.xaxis.tick_top()
-        writer.add_figure("beta_table_heatmap",fig,episode)
-        
-        
-        weighted_endeavor=np.array([sum(avg_total_beta_lists[idx][episode]*np.arange(0., args.range_endeavor)) for idx in range(len(agents))])
+        """
+        draw_graphs(writer, args, agents,
+                    avg_returns,
+                    avg_costs,
+                    avg_rewards,
+                    avg_actions,
+                    avg_highests,
+                    avg_total_beta_lists,
+                    avg_likes,
+                    episode * args.record_term_1, "avg_")
+
+        draw_graphs(writer, args, agents,
+                    avg_returns - (1.96 / pow(args.n_average, 0.5)) * std_returns,
+                    avg_costs - (1.96 / pow(args.n_average, 0.5)) * std_costs,
+                    avg_rewards - (1.96 / pow(args.n_average, 0.5)) * std_rewards,
+                    avg_actions - (1.96 / pow(args.n_average, 0.5)) * std_actions,
+                    avg_highests - (1.96 / pow(args.n_average, 0.5)) * std_highests,
+                    avg_total_beta_lists - (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
+                    avg_likes - (1.96 / pow(args.n_average, 0.5)) * std_likes,
+                    episode * args.record_term_1, "under_")
+
+        draw_graphs(writer, args, agents,
+                    avg_returns + (1.96 / pow(args.n_average, 0.5)) * std_returns,
+                    avg_costs + (1.96 / pow(args.n_average, 0.5)) * std_costs,
+                    avg_rewards + (1.96 / pow(args.n_average, 0.5)) * std_rewards,
+                    avg_actions + (1.96 / pow(args.n_average, 0.5)) * std_actions,
+                    avg_highests + (1.96 / pow(args.n_average, 0.5)) * std_highests,
+                    avg_total_beta_lists + (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
+                    avg_likes + (1.96 / pow(args.n_average, 0.5)) * std_likes,
+                    episode * args.record_term_1, "upper_")
+        """
+
+        """heatmap"""
+        # weighted average endeavor
+        weighted_endeavor = np.array(
+            [sum(avg_total_beta_lists[k] * np.arange(0., args.range_endeavor)) for k in range(len(agents))])
         weighted_endeavor_list.append(weighted_endeavor)
-        
-    fig=plt.figure()
-    ax=sns.heatmap(np.array(weighted_endeavor_list))
-#    ax.xaxis.set_label_position('top')
+
+    # weighted average endeavor
+    fig = plt.figure()
+    ax = sns.heatmap(np.array(weighted_endeavor_list))
     ax.xaxis.tick_top()
-    writer.add_figure("agent's weighted avg endeavor", fig)
-        
-        
+    writer.add_figure("weighted_avg_endeavor_heatmap", fig)
+
+    """details beta table heatmap"""
+    for episode in range(int(args.n_episode / args.record_term_2) + 1):
+        avg_details = np.zeros((args.n_agent, args.range_endeavor))
+
+        for i in range(args.n_average):
+            avg_details += np.array(all_details[i][episode]) / args.n_average
+
+        # beta_table
+        fig = plt.figure()
+        ax = sns.heatmap(avg_details.T)
+        ax.xaxis.tick_top()
+        writer.add_figure("beta_table_heatmap", fig, episode)
+
     writer.close()
