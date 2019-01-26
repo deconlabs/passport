@@ -210,6 +210,7 @@ if __name__ == '__main__':
     """
     get average values per recorded episode
     """
+    """
     weighted_endeavor_list = []
 
     for episode in range(int(args.n_episode / args.record_term_1) + 1):
@@ -256,11 +257,9 @@ if __name__ == '__main__':
         std_total_beta_lists = np.power(sqr_avg_total_beta_lists - np.power(avg_total_beta_lists, 2), 0.5)
         std_likes = np.power(sqr_avg_likes - np.power(avg_likes, 2), 0.5)
 
-        """
-        시각화 부분
-        """
-        """console"""
-        """
+        # 시각화 부분
+        # console
+
         print("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t", end='')
         for j in range(len(avg_total_beta_lists[0])):
             if j == len(avg_total_beta_lists[0]) - 1:
@@ -278,10 +277,8 @@ if __name__ == '__main__':
                   "\tlike:", format(avg_likes[j], '5.2f'),
                   "\tbeta_table(%): ", end='')
             list_formated_print(avg_total_beta_lists[j])
-        """
 
-        """tensorboard"""
-        # """
+        # tensorboard
         draw_graphs(writer, args, agents,
                     avg_returns,
                     avg_costs,
@@ -311,10 +308,8 @@ if __name__ == '__main__':
                     avg_total_beta_lists + (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
                     avg_likes + (1.96 / pow(args.n_average, 0.5)) * std_likes,
                     episode * args.record_term_1, "upper_")
-        # """
 
-        """heatmap"""
-    """
+        # heatmap
         # weighted average endeavor
         weighted_endeavor = np.array(
             [sum(avg_total_beta_lists[k] * np.arange(0., args.range_endeavor)) for k in range(len(agents))])
