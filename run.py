@@ -10,7 +10,10 @@ from visualization import draw_graphs
 # from visualization import list_formated_print
 import pickle
 import os
-
+import matplotlib.pyplot as plt
+#plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = False
+#plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = True
+import seaborn as sns
 
 def distribute_asset(agents, n_agent):
     """
@@ -197,6 +200,8 @@ if __name__ == '__main__':
     """
     get average values per recorded episode
     """
+    weighted_endeavor_list=[]
+    
     for episode in range(int(args.n_episode / args.record_term_1) + 1):
         avg_returns = np.zeros(args.n_agent)
         avg_costs = np.zeros(args.n_agent)
@@ -267,34 +272,50 @@ if __name__ == '__main__':
         """
 
         """tensorboard"""
-        draw_graphs(writer, args, agents,
-                    avg_returns,
-                    avg_costs,
-                    avg_rewards,
-                    avg_actions,
-                    avg_highests,
-                    avg_total_beta_lists,
-                    avg_likes,
-                    episode * args.record_term_1, "avg_")
-
-        draw_graphs(writer, args, agents,
-                    avg_returns - (1.96 / pow(args.n_average, 0.5)) * std_returns,
-                    avg_costs - (1.96 / pow(args.n_average, 0.5)) * std_costs,
-                    avg_rewards - (1.96 / pow(args.n_average, 0.5)) * std_rewards,
-                    avg_actions - (1.96 / pow(args.n_average, 0.5)) * std_actions,
-                    avg_highests - (1.96 / pow(args.n_average, 0.5)) * std_highests,
-                    avg_total_beta_lists - (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
-                    avg_likes - (1.96 / pow(args.n_average, 0.5)) * std_likes,
-                    episode * args.record_term_1, "under_")
-
-        draw_graphs(writer, args, agents,
-                    avg_returns + (1.96 / pow(args.n_average, 0.5)) * std_returns,
-                    avg_costs + (1.96 / pow(args.n_average, 0.5)) * std_costs,
-                    avg_rewards + (1.96 / pow(args.n_average, 0.5)) * std_rewards,
-                    avg_actions + (1.96 / pow(args.n_average, 0.5)) * std_actions,
-                    avg_highests + (1.96 / pow(args.n_average, 0.5)) * std_highests,
-                    avg_total_beta_lists + (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
-                    avg_likes + (1.96 / pow(args.n_average, 0.5)) * std_likes,
-                    episode * args.record_term_1, "upper_")
-
+#        draw_graphs(writer, args, agents,
+#                    avg_returns,
+#                    avg_costs,
+#                    avg_rewards,
+#                    avg_actions,
+#                    avg_highests,
+#                    avg_total_beta_lists,
+#                    avg_likes,
+#                    episode * args.record_term_1, "avg_")
+#
+#        draw_graphs(writer, args, agents,
+#                    avg_returns - (1.96 / pow(args.n_average, 0.5)) * std_returns,
+#                    avg_costs - (1.96 / pow(args.n_average, 0.5)) * std_costs,
+#                    avg_rewards - (1.96 / pow(args.n_average, 0.5)) * std_rewards,
+#                    avg_actions - (1.96 / pow(args.n_average, 0.5)) * std_actions,
+#                    avg_highests - (1.96 / pow(args.n_average, 0.5)) * std_highests,
+#                    avg_total_beta_lists - (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
+#                    avg_likes - (1.96 / pow(args.n_average, 0.5)) * std_likes,
+#                    episode * args.record_term_1, "under_")
+#
+#        draw_graphs(writer, args, agents,
+#                    avg_returns + (1.96 / pow(args.n_average, 0.5)) * std_returns,
+#                    avg_costs + (1.96 / pow(args.n_average, 0.5)) * std_costs,
+#                    avg_rewards + (1.96 / pow(args.n_average, 0.5)) * std_rewards,
+#                    avg_actions + (1.96 / pow(args.n_average, 0.5)) * std_actions,
+#                    avg_highests + (1.96 / pow(args.n_average, 0.5)) * std_highests,
+#                    avg_total_beta_lists + (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
+#                    avg_likes + (1.96 / pow(args.n_average, 0.5)) * std_likes,
+#                    episode * args.record_term_1, "upper_")
+        
+        fig=plt.figure()
+        ax=sns.heatmap(avg_total_beta_lists.T)
+        ax.xaxis.tick_top()
+        writer.add_figure("beta_table_heatmap",fig,episode)
+        
+        
+        weighted_endeavor=np.array([sum(avg_total_beta_lists[idx][episode]*np.arange(0., args.range_endeavor)) for idx in range(len(agents))])
+        weighted_endeavor_list.append(weighted_endeavor)
+        
+    fig=plt.figure()
+    ax=sns.heatmap(np.array(weighted_endeavor_list))
+#    ax.xaxis.set_label_position('top')
+    ax.xaxis.tick_top()
+    writer.add_figure("agent's weighted avg endeavor", fig)
+        
+        
     writer.close()
