@@ -66,7 +66,7 @@ for episode in range(int(args.n_episode / args.record_term_1) + 1):
     
 if not os.path.exists("./visualization/{}/{}/{}/{}/{}/images/".format(
         my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:])):
-    os.mkdir("./visualization/{}/{}/{}/{}/{}/images/".format(
+    os.makedirs("./visualization/{}/{}/{}/{}/{}/images/".format(
         my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
 # weighted average endeavor
 fig = plt.figure()
