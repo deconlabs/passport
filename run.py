@@ -327,7 +327,7 @@ if __name__ == '__main__':
     # writer.add_figure("weighted_avg_endeavor_heatmap", fig)
     plt.savefig("./visualization/{}/{}/{}/{}/{}/images/weighted_endeavor".format(my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
     plt.close(fig)
-        
+
     # details beta table heatmap
     for episode in range(int(args.n_episode / args.record_term_2) + 1):
         avg_details = np.zeros((args.n_agent, args.range_endeavor))
