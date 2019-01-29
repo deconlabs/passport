@@ -11,7 +11,7 @@
   * 리워드 분배를 어떻게 해야하나?
 * 또는, 어떤 이코노미 환경 상에서 사용자들이 어떻게 행동할까?
 
-[ ] Jeffrey
+- [ ] Jeffrey
 ### Hyperparameters
 * 에이전트 수
 * 에피소드 횟수
@@ -23,7 +23,7 @@
   * uniform
 * 과거 review 히스토리 몇 개나 볼 것인가?
 
-[ ] Luke
+- [ ] Luke
 ### functions
 * cost
   * 에이전트는 자신의 노력 수준을 통해 cost가 얼마나 드는지 산정 가능.
@@ -55,7 +55,7 @@
 
 ## Analysis
 
-[ ] Jeffrey
+- [ ] Jeffrey
 ### 기준 1) review ratio (action ratio)
 * avg 값, 신뢰구간, 각 에이전트의 값
   * 에이전트 0이랑, 에이전트 50이랑, 그리고 에이전트 99
@@ -69,7 +69,7 @@
 * 리뷰 히스토리 반영 방법에 따라 비교
 * 리뷰 히스토리 반영 갯수에 따라 비교
 
-[ ] Luke
+- [ ] Luke
 ### 기준 2) endeavor 분포 (with beta table)
 * 히트맵 이용
   * GIF
