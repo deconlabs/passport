@@ -1,16 +1,17 @@
 # Drift
 
-## Decentrailized Review System
+## Intro: Decentrailized Review System
 * 어떤 리뷰 시스템을 가지고 있는가?
   * 리뷰를 남기면 호텔에서 선지불한 리워드풀에서 나누어 지급됨
   * 사용자들은 리뷰를 남기는 노고(cost)와 보상을 비교하여 이득이 되는 행동을 한다.
     * 이득이 되는 노력 수준 [0, ..., 9]
-  
+
 * 어떤 이코노미 환경 상에서 사람들이 가장 열심히 리뷰를 작성할까?
   * 전체 리워드풀을 얼마나 줘야하나?
   * 리워드 분배를 어떻게 해야하나?
 * 또는, 어떤 이코노미 환경 상에서 사용자들이 어떻게 행동할까?
 
+[ ] Jeffrey
 ### Hyperparameters
 * 에이전트 수
 * 에피소드 횟수
@@ -22,6 +23,7 @@
   * uniform
 * 과거 review 히스토리 몇 개나 볼 것인가?
 
+[ ] Luke
 ### functions
 * cost
   * 에이전트는 자신의 노력 수준을 통해 cost가 얼마나 드는지 산정 가능.
@@ -53,6 +55,7 @@
 
 ## Analysis
 
+[ ] Jeffrey
 ### 기준 1) review ratio (action ratio)
 * avg 값, 신뢰구간, 각 에이전트의 값
   * 에이전트 0이랑, 에이전트 50이랑, 그리고 에이전트 99
@@ -66,6 +69,7 @@
 * 리뷰 히스토리 반영 방법에 따라 비교
 * 리뷰 히스토리 반영 갯수에 따라 비교
 
+[ ] Luke
 ### 기준 2) endeavor 분포 (with beta table)
 * 히트맵 이용
   * GIF
@@ -75,6 +79,11 @@
   * 히트맵 2:
     * x축 에이전트, y축이 episode
     * weighted endeavor를 보여줌
+
+## Conclusion
+* 생태계 지배자의 입맛에 따라 세팅이 달라진다.
+  * 리워드풀
+  * 유니폼으로 하면 사람들이 노력을 안한다!
 
 
 # How to Use
