@@ -1,4 +1,4 @@
-# Abstract
+# Drift
 
 ## Decentrailized Review System
 * 어떤 리뷰 시스템을 가지고 있는가?
@@ -23,6 +23,58 @@
 * 과거 review 히스토리 몇 개나 볼 것인가?
 
 ### functions
+* cost
+  * 에이전트는 자신의 노력 수준을 통해 cost가 얼마나 드는지 산정 가능.
+  * 에이전트의 asset이 많을수록 cost가 높아짐.
+  * ```asset```, ```endeavor```, 그리고 ```asset*endeavor``` 항이 있어서, 각 항의 계수를 잘 조정하는 것으로 원하는 cost 양상을 그릴 수 있음.
+    * ```asset*endeavor``` 계수를 높이면, 선형적인 특성에서부터 점차 벗어날 수 있음.
+  * real_endeavor
+    * 노력이 선형적이 아닌 지수적으로 반영됨
+      * 노력을 한 단위 올릴 때 들어가는 비용이 더 커짐
+      * 일정 수준 이상 가면 올리는 cost가 
+
+* return
+  * like
+    * 에이전트가 자신의 글이 받을 like를 예상
+    * 들인 노력과, 리뷰 히스토리로부터 like가 예상됨
+      * 리뷰 히스토리 방법론
+        * 0: 과거에 리뷰 썼으면 -> like를 더 받을 것
+        * 1: +) 과거에 리뷰 하나도 안 쓰다가 쓰면 정말 빡쳐서 쓴거거나 정말 좋아서 쓴거니 좋아요 많이 받을 것
+        * 2: 1번을 더 발전시켜서, 과거 리뷰 갯수와 받는 좋아요 예상이 반대로 감
+      * action으로 구함 (real_endeavor 안 씀)
+        * 이미 한 액션에 대하여 like를 받게 되므로
+    * 예상 좋아요가 정규분포를 따라 랜덤하게 구해짐
+    * 내가 받은 like / total 모든 글의 like * reward_pool로 내 리턴이 결정됨
+      * 다른 사람들이 얼마나 like를 받을 지 모르므로, 내 return을 예상할 수는 없다.
+        * 다른 사람들이 들인 노력을 모르므로
+
+* reward = return - cost
+
+
+## Analysis
+
+### 기준 1) review ratio (action ratio)
+* avg 값, 신뢰구간, 각 에이전트의 값
+  * 에이전트 0이랑, 에이전트 50이랑, 그리고 에이전트 99
+    * 에이전트 분포는 asset이 많은 순에서 적은 순으로 sort됨.
+      * 에이전트 에셋 분포 그림
+      * pareto
+
+* 각 매커니즘 별 비교
+* 참여 에이전트 수에 따라 비교
+* 리워드 풀에 따라 비교
+* 리뷰 히스토리 반영 방법에 따라 비교
+* 리뷰 히스토리 반영 갯수에 따라 비교
+
+### 기준 2) endeavor 분포 (with beta table)
+* 히트맵 이용
+  * GIF
+  * 히트맵 1:
+    * x축 에이전트, y축 action인 그래프가 episode 시간축을 따라 존재
+    * beta table을 색상으로 보여줌
+  * 히트맵 2:
+    * x축 에이전트, y축이 episode
+    * weighted endeavor를 보여줌
 
 
 # How to Use
