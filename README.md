@@ -27,7 +27,7 @@
 
 ---
 
-- [ ] Luke
+- [x] Luke
 ### functions
 * cost
   * 에이전트는 자신의 노력 수준을 통해 cost가 얼마나 드는지 산정 가능.
