@@ -13,7 +13,7 @@
 
 ---
 
-- [ ] Jeffrey
+- [x] Jeffrey
 ### Hyperparameters
 * 에이전트 수
 * 에피소드 횟수
