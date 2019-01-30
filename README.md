@@ -77,7 +77,7 @@
 
 ---
 
-- [ ] Luke
+- [x] Luke
 ### 기준 2) endeavor 분포 (with beta table)
 * 히트맵 이용
   * GIF
