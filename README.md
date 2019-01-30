@@ -91,6 +91,10 @@
 ## Limitation
 * people doesn't make decision based on lucrative reasons, rather on 감정
 
+## 다른 이코노미로 확장가능성 ? 
+* 어떤 문제를 풀기 위해 함께 돈을 모아둠. 그리고 문제르 풀기 위해 서로 의견을 냄. user들은 서로의 의견에 like를 달아줌.
+그리고 like수에 따라 모아둔 reward를 분배함.
+
 ## Conclusion
 * 생태계 지배자의 입맛에 따라 세팅이 달라진다.
   * 리워드풀
