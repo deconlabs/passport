@@ -1,4 +1,4 @@
-# Drift
+# Draft
 
 ## Intro: Decentrailized Review System
 * 어떤 리뷰 시스템을 가지고 있는가?
@@ -87,6 +87,9 @@
   * 히트맵 2:
     * x축 에이전트, y축이 episode
     * weighted endeavor를 보여줌
+
+## Limitation
+* people doesn't make decision based on lucrative reasons, rather on 감정
 
 ## Conclusion
 * 생태계 지배자의 입맛에 따라 세팅이 달라진다.
