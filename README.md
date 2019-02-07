@@ -3,8 +3,12 @@
 ### Run
 ```bash
 python3 run.py [--<arg1>=<value1>] [--<arg2>=<value2>] ...
+```
+
+```bash
 python3 run.py --mechanism="proportional" --n_agent=100 --reward_pool=500 --review_history=False --window=5
 ```
+
 *or*
 ```bash
 /bin/sh runpy.sh
