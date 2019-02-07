@@ -4,14 +4,10 @@ import random
 import sys
 import pickle
 import os
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 from agent import Agent
 from arguments import argparser
 from env import Env
-from visualization import draw_graphs
-# from visualization import list_formated_print
 
 
 def distribute_asset(agents, n_agent):
@@ -96,7 +92,8 @@ def run(env, agents, args):
         *   rewards: list of float
         *   likes: list of float
         """
-        review_ratio, actions, returns, costs, rewards, likes = env.step(agents)
+        review_ratio, actions, returns, costs, rewards, likes = env.step(
+            agents)
 
         """
         get_action으로 각 에이전트의 action을 갱신하고, 리스트 형태로 저장함.
@@ -173,7 +170,8 @@ if __name__ == '__main__':
     for i in range(args.n_average):
         env = Env(args)
         agents = [Agent(env.action_space, args) for i in range(args.n_agent)]
-        returns, costs, rewards, actions, highests, total_beta_lists, likes, details = run(env, agents, args)
+        returns, costs, rewards, actions, highests, total_beta_lists, likes, details = run(
+            env, agents, args)
 
         all_returns.append(returns)
         all_costs.append(costs)
@@ -187,7 +185,7 @@ if __name__ == '__main__':
         print("loop", i, "done")
 
     """
-    files save
+    pickle files save
     """
     meta_dict = {
         'all_returns': all_returns,
@@ -206,143 +204,5 @@ if __name__ == '__main__':
         os.mkdir('./data')
     with open(filename, 'wb') as f:
         pickle.dump(meta_dict, f)
-
-    """
-    get average values per recorded episode
-    """
-    """
-    weighted_endeavor_list = []
-
-    for episode in range(int(args.n_episode / args.record_term_1) + 1):
-        avg_returns = np.zeros(args.n_agent)
-        avg_costs = np.zeros(args.n_agent)
-        avg_rewards = np.zeros(args.n_agent)
-        avg_actions = np.zeros(args.n_agent)
-        avg_highests = np.zeros(args.n_agent)
-        avg_total_beta_lists = np.zeros((args.n_agent, args.range_endeavor))
-        avg_likes = np.zeros(args.n_agent)
-
-        sqr_avg_returns = np.zeros(args.n_agent)
-        sqr_avg_costs = np.zeros(args.n_agent)
-        sqr_avg_rewards = np.zeros(args.n_agent)
-        sqr_avg_actions = np.zeros(args.n_agent)
-        sqr_avg_highests = np.zeros(args.n_agent)
-        sqr_avg_total_beta_lists = np.zeros((args.n_agent, args.range_endeavor))
-        sqr_avg_likes = np.zeros(args.n_agent)
-
-        # print("\n\nepisode {}".format(episode * args.record_term_1))
-
-        for i in range(args.n_average):
-            avg_returns += np.array(all_returns[i][episode]) / args.n_average
-            avg_costs += np.array(all_costs[i][episode]) / args.n_average
-            avg_rewards += np.array(all_rewards[i][episode]) / args.n_average
-            avg_actions += np.array(all_actions[i][episode]) / args.n_average
-            avg_highests += np.array(all_highests[i][episode]) / args.n_average
-            avg_total_beta_lists += np.array(all_total_beta_lists[i][episode]) / args.n_average
-            avg_likes += np.array(all_likes[i][episode]) / args.n_average
-
-            sqr_avg_returns += np.power(np.array(all_returns[i][episode]), 2) / args.n_average
-            sqr_avg_costs += np.power(np.array(all_costs[i][episode]), 2) / args.n_average
-            sqr_avg_rewards += np.power(np.array(all_rewards[i][episode]), 2) / args.n_average
-            sqr_avg_actions += np.power(np.array(all_actions[i][episode]), 2) / args.n_average
-            sqr_avg_highests += np.power(np.array(all_highests[i][episode]), 2) / args.n_average
-            sqr_avg_total_beta_lists += np.power(np.array(all_total_beta_lists[i][episode]), 2) / args.n_average
-            sqr_avg_likes += np.power(np.array(all_likes[i][episode]), 2) / args.n_average
-
-        std_returns = np.power(sqr_avg_returns - np.power(avg_returns, 2), 0.5)
-        std_costs = np.power(sqr_avg_costs - np.power(avg_costs, 2), 0.5)
-        std_rewards = np.power(sqr_avg_rewards - np.power(avg_rewards, 2), 0.5)
-        std_actions = np.power(sqr_avg_actions - np.power(avg_actions, 2), 0.5)
-        std_highests = np.power(sqr_avg_highests - np.power(avg_highests, 2), 0.5)
-        std_total_beta_lists = np.power(sqr_avg_total_beta_lists - np.power(avg_total_beta_lists, 2), 0.5)
-        std_likes = np.power(sqr_avg_likes - np.power(avg_likes, 2), 0.5)
-
-        # 시각화 부분
-        # console
-
-        print("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t", end='')
-        for j in range(len(avg_total_beta_lists[0])):
-            if j == len(avg_total_beta_lists[0]) - 1:
-                print(j)
-            else:
-                print(j, end='\t ')
-
-        for j in range(len(agents)):
-            print(format(j, '2d'),
-                  "\treturn:", format(avg_returns[j], '5.2f'),
-                  "\tcost:", format(avg_costs[j], '5.2f'),
-                  "\treward:", format(avg_rewards[j], '5.2f'),
-                  "\taction:", format(avg_actions[j], '5.2f'),
-                  "\thighest:", format(avg_highests[j], '5.2f'),
-                  "\tlike:", format(avg_likes[j], '5.2f'),
-                  "\tbeta_table(%): ", end='')
-            list_formated_print(avg_total_beta_lists[j])
-
-        # tensorboard
-        draw_graphs(writer, args, agents,
-                    avg_returns,
-                    avg_costs,
-                    avg_rewards,
-                    avg_actions,
-                    avg_highests,
-                    avg_total_beta_lists,
-                    avg_likes,
-                    episode * args.record_term_1, "avg_")
-
-        draw_graphs(writer, args, agents,
-                    avg_returns - (1.96 / pow(args.n_average, 0.5)) * std_returns,
-                    avg_costs - (1.96 / pow(args.n_average, 0.5)) * std_costs,
-                    avg_rewards - (1.96 / pow(args.n_average, 0.5)) * std_rewards,
-                    avg_actions - (1.96 / pow(args.n_average, 0.5)) * std_actions,
-                    avg_highests - (1.96 / pow(args.n_average, 0.5)) * std_highests,
-                    avg_total_beta_lists - (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
-                    avg_likes - (1.96 / pow(args.n_average, 0.5)) * std_likes,
-                    episode * args.record_term_1, "under_")
-
-        draw_graphs(writer, args, agents,
-                    avg_returns + (1.96 / pow(args.n_average, 0.5)) * std_returns,
-                    avg_costs + (1.96 / pow(args.n_average, 0.5)) * std_costs,
-                    avg_rewards + (1.96 / pow(args.n_average, 0.5)) * std_rewards,
-                    avg_actions + (1.96 / pow(args.n_average, 0.5)) * std_actions,
-                    avg_highests + (1.96 / pow(args.n_average, 0.5)) * std_highests,
-                    avg_total_beta_lists + (1.96 / pow(args.n_average, 0.5)) * std_total_beta_lists,
-                    avg_likes + (1.96 / pow(args.n_average, 0.5)) * std_likes,
-                    episode * args.record_term_1, "upper_")
-
-        # heatmap
-        # weighted average endeavor
-        weighted_endeavor = np.array(
-            [sum(avg_total_beta_lists[k] * np.arange(0., args.range_endeavor)) for k in range(len(agents))])
-        weighted_endeavor_list.append(weighted_endeavor)
-
-    if not os.path.exists("./visualization/{}/{}/{}/{}/{}/images".format(
-            my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:])):
-        os.mkdir("./visualization/{}/{}/{}/{}/{}/images".format(
-            my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
-
-    # weighted average endeavor
-    fig = plt.figure()
-    ax = sns.heatmap(np.array(weighted_endeavor_list))
-    ax.xaxis.tick_top()
-    # writer.add_figure("weighted_avg_endeavor_heatmap", fig)
-    plt.savefig("./visualization/{}/{}/{}/{}/{}/images/weighted_endeavor".format(my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
-    plt.close(fig)
-
-    # details beta table heatmap
-    for episode in range(int(args.n_episode / args.record_term_2) + 1):
-        avg_details = np.zeros((args.n_agent, args.range_endeavor))
-
-        for i in range(args.n_average):
-            avg_details += np.array(all_details[i][episode]) / args.n_average
-
-        # beta_table
-        fig = plt.figure()
-        ax = sns.heatmap(avg_details.T)
-        ax.xaxis.tick_top()
-        # writer.add_figure("beta_table_heatmap", fig, episode)
-        plt.savefig("./visualization/{}/{}/{}/{}/{}/images/{}".format(
-            my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:], episode))
-        plt.close(fig)
-    """
 
     writer.close()
