@@ -8,7 +8,6 @@ python3 run.py [--<arg1>=<value1>] [--<arg2>=<value2>] ...
 ```bash
 /bin/sh runpy.sh
 ```
-if ```sh``` file exists.
 
 ### Example
 ```bash
