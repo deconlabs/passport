@@ -49,7 +49,10 @@ autopep8 -i graph_generate.py
 flake8 --ignore E501
 ```
 
-## Author
+# Author
 [@Aiden](https://github.com/belepi93)   
 [@Jeffey](https://github.com/jsrimr)   
 [@Luke](https://github.com/twodude)   
+
+# License
+TBA
