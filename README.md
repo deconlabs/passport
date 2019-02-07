@@ -48,3 +48,8 @@ python3 store_tfevent.py [--<arg1>=<value1>] [--<arg2>=<value2>] ...
 autopep8 -i graph_generate.py
 flake8 --ignore E501
 ```
+
+## Author
+[@Aiden](https://github.com/belepi93)   
+[@Jeffey](https://github.com/jsrimr)   
+[@Luke](https://github.com/twodude)   
