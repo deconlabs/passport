@@ -38,8 +38,6 @@ class Agent:
         self.args = args
 
         self.endeavor = action_space  # [0, 1, 2, ...]
-        self.real_endeavor =\
-            np.power(np.e, np.array(self.endeavor) * np.log(len(self.endeavor)) / (len(self.endeavor) - 1)) - 1
         self.action = 0  # index: 0 or 1 or 2 or ...
         self.my_like = 0.
         self.review_history = deque(maxlen=args.window)  # 1 or 0
@@ -48,80 +46,6 @@ class Agent:
 
         self.q_table = np.zeros_like(self.endeavor)
         self.beta_table = self.softmax(self.q_table)
-
-    def get_my_like(self):
-        """
-        리뷰를 쓰지 않았을 경우 my_like는 0
-        """
-        if self.action == 0:
-            return 0
-
-        """
-        받는 좋아요 수는 노력, 그리고 과거 리뷰 개수(modified)에 영향을 받는다.
-
-        *   과거 리뷰 작성 개수
-            (review_history=0) Case 1. 과거에 리뷰를 더 많이 쓸 수록 받는 좋아요가 많음
-                -   네임드
-                -   리뷰 작성의 경험이 풍부하면 더 좋은 리뷰를 작성할 가능성이 크다?
-                -   더 많은 호텔을 경험했으면 보다 객관적일 것이라는 판단.
-            (review_history=1) Case 1-1. (default: 미사용)과거에 리뷰를 작성하지 않다가 갑자기 작성했을 경우에 대한 판단
-                -   리뷰를 안 쓰던 사람이 썼을 정도이니까
-                    -   완전히 좋거나
-                    -   완전히 나쁘거나 할 것이다
-                -   리뷰에 대한 신뢰도 UP -> 좋아요 많이 받음
-            (review_history=2) Case 2. 과거에 리뷰를 더 많이 쓸 수록 받는 좋아요가 적음
-                -   Case 1-1.을 보다 확장
-                -   리뷰를 안 쓰던 사람이 갑자기 리뷰를? <- 믿을 수 있다.
-
-        *   노력
-            -   action으로 적용
-            -   endeavor나 real_endeavor로 적용하지 않는 이유
-                -   노력 여하가 아닌
-                -   실제 행동한 action에 따라 좋아요를 받아야 하기 때문
-        """
-        # 0 or 1
-        if self.args.review_history < 2:
-            score = sum(self.review_history)  # 범위: 0부터 최대 window=5 까지
-
-            # 1
-            # 만일 리뷰를 하나도 쓰지 않다가 작성할 경우, 최대값 + 1
-            if self.args.review_history == 1:
-                if sum(self.review_history) == 0:
-                    score = self.args.window + 1
-
-        else:
-            score = self.args.window - sum(self.review_history)
-
-        """
-        *   tiny_value를 더하여 0으로 나누는 경우를 방지
-
-        *   정규분포를 활용하여 받는 좋아요의 수치에 확률적인 요소를 추가함
-
-        *   현재의 action에 가장 큰 영향을 받도록 하였으며
-
-        *   default: like_coef_1=2.0
-        *   default: like_coef_2=1.0
-            -   과거 리뷰 이력보다 현재의 액션이 더 중요함
-            -   과거 리뷰가 1 이상의 영향을 주지는 않음.
-            -   본 값이 클 수록 받는 좋아요의 차이가 크게 차이나게 됨.
-            -   물론 확률적으로 받으므로 무조건적으로 크게 받는 것은 아니며, 크게 받을 확률이 커지는 것.
-                -   정규분포:
-                -   약 68%의 값들이 평균에서 양쪽으로 1 표준편차 범위(μ±σ)에 존재한다.
-                -   약 95%의 값들이 평균에서 양쪽으로 2 표준편차 범위(μ±2σ)에 존재한다.
-                -   거의 모든 값들(실제로는 99.7%)이 평균에서 양쪽으로 3표준편차 범위(μ±3σ)에 존재한다.
-        """
-        coef1 = self.args.like_coef_1
-        coef2 = self.args.like_coef_2 / \
-            (self.args.window + sys.float_info.epsilon)
-        mu = coef1 * (self.action) + coef2 * score
-
-        """
-        *   좋아요만 있기에, 음수는 있을 수 없으므로, 0으로 예외처리
-
-        *   default: std_dev=1.0
-        """
-        self.my_like = max(0, random.gauss(mu, self.args.std_dev))
-        return self.my_like
 
     def softmax(self, x):
         """
@@ -140,10 +64,7 @@ class Agent:
         return e_x / np.sum(e_x)
 
     def get_action(self, deterministic=False):
-        """
-        :param deterministic: True일 경우 결정론적으로 가장 높은 확률을 가진 action이 선출됨. 아닐 경우 확률적으로 결정.
-        :return: 에이전트의 액션.
-        """
+
         if deterministic:
             """
             만일 제일 큰 항목이 여러개라면 그 중에서 랜덤으로 선출
@@ -164,63 +85,8 @@ class Agent:
         self.action = action
         return action
 
-    def get_cost(self):
-        """
-        만일 노력을 하지 않았을 경우(글을 작성하지 않은 경우) 들어가는 비용은 0
-        """
-
-        """
-        노력을 했을 경우
-
-        *   글 작성에 소요되는 비용은 asset과 endeavor에 의해 결정된다.
-            -   자산이 많은 사람은 굳이 마일리지를 받기 위해 리뷰를 작성할 노고를 들일 필요가 없다.
-            -   노력을 많이 들일 경우 당연히 글 작성에 들어가는 비용도 커진다.
-            -   두 항목이 선형적으로 결합되는 것이 아닌 곱셈항을 넣음으로써 보다 잘 모델링 할 수 있음
-                -   만일 계수 b3가 0이면 선형적인 결함임: default=0.5
-            -   글을 씀에 절대적으로 들어가는 노력은 계수 b0으로 줄 수 있음: default=1.0
-
-            -   노력은 endeavor가 아닌 real_endeavor로 적용한다.
-                -   실제 들어가는 노력은 선형적으로 증가하는 것이 아니라 지수적으로 증가함을 가정.
-
-        *   asset은 자산 분배의 비율이므로
-            -   에이전트의 수로 나눠 줄 필요가 없으며,
-            -   들어가는 cost의 계산을 위해서는 오히려 에이전트의 수를 곱해줘야 한다(정규화)
-        """
-
-        if self.action == 0:
-            return 0.
-
-        else:
-            # asset과 endeavor에 의해 결정
-            """
-            *   asset은 비율이므로 에이전트의 수를 곱하여 정규화
-            """
-            b0 = self.args.b0
-            b1 = self.args.b1 * self.args.n_agent
-            b2 = self.args.b2
-            b3 = self.args.b3 * self.args.n_agent
-
-            # self.real_endeavor[action]: 0에서 len(endeavor)-1 까지
-            # reward = agent.my_like / total_like * self.reward_pool
-            # rewards = [ret - cost for ret, cost in zip(returns, costs)]
-            cost =\
-                b0 +\
-                b1 * self.asset +\
-                b2 * self.real_endeavor[self.action] +\
-                b3 * self.asset * self.real_endeavor[self.action]
-
-            # print(self.asset, self.real_endeavor[self.action], self.asset*self.real_endeavor[self.action])
-
-            return cost
-
-    def receive_token(self, amount_token):
-        """
-        :param amount_token: 받은 토큰을 실제 자산에 더함
-        :return: 없음
-
-        에피소드당 step이 1이므로 사용하지 않는다.
-        """
-        self.asset += amount_token
+    # def receive_token(self, amount_token):
+    #     self.asset += amount_token
 
     def learn(self, action, reward):
         """

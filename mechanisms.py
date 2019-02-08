@@ -1,7 +1,7 @@
 import numpy as np
-
-
 # UNIFORM
+
+
 def mechanism_v1(reward_pool, likes, total_like, n_reviewers):
     uniform_reward = reward_pool / n_reviewers
     likes = np.array(likes) / total_like
