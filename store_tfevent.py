@@ -72,23 +72,33 @@ if __name__ == '__main__':
             avg_rewards += np.array(all_rewards[i][episode]) / args.n_average
             avg_actions += np.array(all_actions[i][episode]) / args.n_average
             avg_highests += np.array(all_highests[i][episode]) / args.n_average
-            avg_total_beta_lists += np.array(all_total_beta_lists[i][episode]) / args.n_average
+            avg_total_beta_lists += np.array(
+                all_total_beta_lists[i][episode]) / args.n_average
             avg_likes += np.array(all_likes[i][episode]) / args.n_average
 
-            sqr_avg_returns += np.power(np.array(all_returns[i][episode]), 2) / args.n_average
-            sqr_avg_costs += np.power(np.array(all_costs[i][episode]), 2) / args.n_average
-            sqr_avg_rewards += np.power(np.array(all_rewards[i][episode]), 2) / args.n_average
-            sqr_avg_actions += np.power(np.array(all_actions[i][episode]), 2) / args.n_average
-            sqr_avg_highests += np.power(np.array(all_highests[i][episode]), 2) / args.n_average
-            sqr_avg_total_beta_lists += np.power(np.array(all_total_beta_lists[i][episode]), 2) / args.n_average
-            sqr_avg_likes += np.power(np.array(all_likes[i][episode]), 2) / args.n_average
+            sqr_avg_returns += np.power(
+                np.array(all_returns[i][episode]), 2) / args.n_average
+            sqr_avg_costs += np.power(
+                np.array(all_costs[i][episode]), 2) / args.n_average
+            sqr_avg_rewards += np.power(
+                np.array(all_rewards[i][episode]), 2) / args.n_average
+            sqr_avg_actions += np.power(
+                np.array(all_actions[i][episode]), 2) / args.n_average
+            sqr_avg_highests += np.power(
+                np.array(all_highests[i][episode]), 2) / args.n_average
+            sqr_avg_total_beta_lists += np.power(
+                np.array(all_total_beta_lists[i][episode]), 2) / args.n_average
+            sqr_avg_likes += np.power(
+                np.array(all_likes[i][episode]), 2) / args.n_average
 
         std_returns = np.power(sqr_avg_returns - np.power(avg_returns, 2), 0.5)
         std_costs = np.power(sqr_avg_costs - np.power(avg_costs, 2), 0.5)
         std_rewards = np.power(sqr_avg_rewards - np.power(avg_rewards, 2), 0.5)
         std_actions = np.power(sqr_avg_actions - np.power(avg_actions, 2), 0.5)
-        std_highests = np.power(sqr_avg_highests - np.power(avg_highests, 2), 0.5)
-        std_total_beta_lists = np.power(sqr_avg_total_beta_lists - np.power(avg_total_beta_lists, 2), 0.5)
+        std_highests = np.power(
+            sqr_avg_highests - np.power(avg_highests, 2), 0.5)
+        std_total_beta_lists = np.power(
+            sqr_avg_total_beta_lists - np.power(avg_total_beta_lists, 2), 0.5)
         std_likes = np.power(sqr_avg_likes - np.power(avg_likes, 2), 0.5)
 
         # tensorboard

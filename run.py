@@ -1,4 +1,4 @@
-from tensorboardX import SummaryWriter
+# from tensorboardX import SummaryWriter
 import numpy as np
 import random
 import sys
@@ -7,54 +7,21 @@ import os
 
 from agent import Agent
 from arguments import argparser
-from env import Env
+from gym_style_env import Env
 
 
-def distribute_asset(agents, n_agent):
-    """
-    :param agents: 참여 에이전트들
-    :param n_agent: 참여 에이전트의 수
-    :return: 없음
-    """
-
-    """
-    초기에 에이전트에게 자산을 배분하는 함수
-
-    *   초기 구현에서는 total_asset이라는 실제 자산의 양을 설정하고 이를 배분했으나,
-        그럴 경우 참여 에이전트 수에 따라 배분받는 total_asset이 현저하게 차이날 수 있으므로,
-    *   실제 자산을 배분하는 것이 아닌 비율만 산정하는 것으로 변경함.
-        -   자산에 영향을 받는 cost 함수에서, asset이 포함된 항의 계수에
-        -   n_agent를 곱해줘야 함: 정규화
-
-    *   정규분포보다 현 사회를 잘 반영할 수 있는 모델로 pareto 분포를 사용함
-        -   빌프레도 파레토는 파레토 분포를 사회에서 부의 분포를 나타내기 위해 사용하였다.
-        -   사회에서는 부의 불공평한 분포로 인해 대부분의 부가 소수에 의해 소유되는데 (파레토 법칙),
-        -   파레토 분포는 이를 효과적으로 나타낸다.
-        -   Pareto, Vilfredo, Cours d’Économie Politique: Nouvelle édition par G.-H. Bousquet et G. Busino,
-            Librairie Droz, Geneva, 1964, pages 299–345.
-
-    *   정규화 과정을 거침
-    *   자산이 많은 사람이 앞에(빠른 인덱스 번호) 오도록 정렬함
-    """
+def distribute_asset(env, n_agent):
     # probs=np.random.normal(total_asset/n_agent, 3, n_agent)
     probs = np.random.pareto(2, n_agent)
     probs /= np.sum(probs)
     probs = sorted(probs)[::-1]
 
     for i in range(n_agent):
-        agents[i].asset = probs[i]
+        env.agent_assets[i] = probs[i]
 
 
 def run(env, agents, args):
-    """
-    :param env: 정의한 환경
-    :param agents: 참여 에이전트들
-    :param args: 하이퍼파라메터들
-    :return:    res_returns, res_costs, res_rewards, res_actions, res_highests, res_beta_tables, res_likes,
-                detail_beta_lists
-                    -   for each agents
-                    -   평균을 내기 위해 return함
-    """
+
     res_returns = []
     res_costs = []
     res_rewards = []
@@ -80,7 +47,6 @@ def run(env, agents, args):
             -   본 시뮬레이션에서는 step이라는 개념이 딱히 필요 없음
             -   매 에피소드는 1 step으로 돌아간다고 봐도 무방
         """
-        distribute_asset(agents, args.n_agent)
 
         """
         실제 1 step을 수행함.
@@ -92,8 +58,33 @@ def run(env, agents, args):
         *   rewards: list of float
         *   likes: list of float
         """
-        review_ratio, actions, returns, costs, rewards, likes = env.step(
-            agents)
+
+        actions = []
+        # likes = []
+        # n_reviewers = 0
+        for agent in agents:
+            actions.append(agent.get_action())  # 확률론적
+
+            # agent.my_like = agent.get_my_like()
+            # likes.append(agent.my_like)
+
+            # env.total_like += agent.my_like
+
+            # if agent.action >= 1:
+            #     agent.review_history.append(1)
+            #     n_reviewers += 1
+            # else:
+            #     agent.review_history.append(0)
+
+        _, rewards, _, info = env.step(actions)
+
+        for idx, agent in enumerate(agents):
+            agent.learn(actions[idx], rewards[idx])
+
+        # review_ratio = info['review_ratio']
+        returns = info['returns']
+        costs = info['costs']
+        likes = info['likes']
 
         """
         get_action으로 각 에이전트의 action을 갱신하고, 리스트 형태로 저장함.
@@ -152,8 +143,8 @@ if __name__ == '__main__':
     random.seed(950327)
 
     args = argparser()
-    writer = SummaryWriter("./visualization/{}/{}/{}/{}/{}".format(
-        my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
+    # writer = SummaryWriter("./visualization/{}/{}/{}/{}/{}".format(
+    #     my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:]))
 
     """
     default n_average=100
@@ -169,6 +160,7 @@ if __name__ == '__main__':
 
     for i in range(args.n_average):
         env = Env(args)
+        distribute_asset(env, args.n_agent)
         agents = [Agent(env.action_space, args) for i in range(args.n_agent)]
         returns, costs, rewards, actions, highests, total_beta_lists, likes, details = run(
             env, agents, args)
@@ -205,4 +197,4 @@ if __name__ == '__main__':
     with open(filename, 'wb') as f:
         pickle.dump(meta_dict, f)
 
-    writer.close()
+    # writer.close()
