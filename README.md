@@ -1,8 +1,3 @@
-# ToDo
-
-## Code Refactoring
-* following openai-gym-api style.
-
 # Passport
 
 Simulation of Incentive Design
