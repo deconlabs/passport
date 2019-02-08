@@ -1,7 +1,7 @@
 import numpy as np
+
+
 # UNIFORM
-
-
 def mechanism_v1(reward_pool, likes, total_like, n_reviewers):
     uniform_reward = reward_pool / n_reviewers
     likes = np.array(likes) / total_like
@@ -28,6 +28,3 @@ def mechanism_v3(reward_pool, likes, total_like, n_reviewers):
 # give rewards more when write reviews for hotel which has few reviews
 def mec4():
     pass
-
-
-# cannot figure autonomously the best reward system, but gives hints of which system is better.

@@ -33,9 +33,7 @@ if __name__ == '__main__':
     filename = "./data/{}_{}_{}_{}_{}.pkl".format(
         my_args[1][2:], my_args[2][2:], my_args[3][2:], my_args[4][2:], my_args[5][2:])
 
-    """
-    load pkl files
-    """
+    """load pkl files"""
     with open(filename, 'rb') as f:
         dict_ = pickle.load(f)
 
