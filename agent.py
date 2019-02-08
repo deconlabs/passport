@@ -20,6 +20,11 @@ class Agent:
         return e_x / np.sum(e_x)
 
     def get_action(self, deterministic=False):
+        """
+        :param deterministic: True일 경우 결정론적으로 가장 높은 확률을 가진 action이 선출됨. 아닐 경우 확률적으로 결정.
+        :return: 에이전트의 액션.
+        """
+
         if deterministic:
             b = np.array(self.beta_table)
             action = np.random.choice(np.flatnonzero(b == b.max()))

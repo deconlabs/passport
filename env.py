@@ -19,10 +19,11 @@ class Env:
     def step(self, actions):
         likes = self.get_like(actions)
         n_reviewers = sum([1 for act in actions if act != 0])
+        review_ratio = n_reviewers / self.n_agent
+
         returns = self.get_return(likes, sum(likes), n_reviewers, self.args.mechanism)
         costs = self.get_cost(actions)
         rewards = [ret - cost for ret, cost in zip(returns, costs)]
-        review_ratio = n_reviewers / self.n_agent
 
         info = {
             # 'actions': actions,

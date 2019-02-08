@@ -29,12 +29,13 @@ def run(env, agents, args):
     res_likes = []
     detail_beta_lists = []
 
+    """per episode"""
     for episode in range(args.n_episode + 1):
-
         actions = []
         for agent in agents:
             actions.append(agent.get_action())  # 확률론적
 
+        """per step"""
         # just a one step.
         _, rewards, _, info = env.step(actions)
 
