@@ -81,7 +81,7 @@ def run(env, agents, args):
         for idx, agent in enumerate(agents):
             agent.learn(actions[idx], rewards[idx])
 
-        review_ratio = info['review_ratio']
+        # review_ratio = info['review_ratio']
         returns = info['returns']
         costs = info['costs']
         likes = info['likes']

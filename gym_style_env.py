@@ -84,10 +84,11 @@ class Env:
 
     def get_cost(self, actions):
         def real_endeavor(endeavor):
-            real_endeavor =\
-                np.power(np.e, np.array(self.action_space) *
-                         np.log(len(self.action_space)) / (len(self.action_space) - 1)) - 1
-            return real_endeavor[endeavor]
+            real_endeavors =\
+                np.power(
+                    np.e, np.array(self.action_space) * np.log(len(self.action_space)) / (len(self.action_space) - 1)
+                ) - 1
+            return real_endeavors[endeavor]
 
         costs = []
         for idx, action in enumerate(actions):
